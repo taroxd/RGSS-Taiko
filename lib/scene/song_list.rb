@@ -2,13 +2,14 @@
 
 require 'scene/base'
 require 'scene/play'
-require 'spriteset/spriteset_song_list'
+require 'scene/autoload_view'
 
 #  选曲场景。
 module Scene
   class SongList < Base
 
     include Taiko
+    include AutoloadView
 
     @@index = 0
 
@@ -22,18 +23,16 @@ module Scene
     # 开始处理
     def start
       Graphics.resize_screen(480, 272)
-      super
       @songlist = Dir.glob("#{DIRECTORY}/**/*#{EXTNAME}").map do |name|
         SongData.header name.chomp(EXTNAME)
       end
+      super
       play_demo
-      @spriteset = Spriteset_SongList.new
     end
 
     # 结束处理
     def terminate
       super
-      @spriteset.dispose
       Graphics.resize_screen(544, 416)
       Audio.bgm_stop
     end
@@ -42,7 +41,6 @@ module Scene
     def update
       super
       update_index
-      update_spriteset
       update_scene unless scene_changing?
     end
 
@@ -66,10 +64,6 @@ module Scene
       Audio.bgm_play header.wave, header.song_vol, 100
     end
 
-    # 更新精灵组
-    def update_spriteset
-      @spriteset.update
-    end
 
     def update_scene
       if Input.trigger?(:C)

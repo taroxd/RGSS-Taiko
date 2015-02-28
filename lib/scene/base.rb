@@ -1,5 +1,7 @@
 # encoding:utf-8
 
+# 场景的父类。
+
 module Scene
   class Base
 

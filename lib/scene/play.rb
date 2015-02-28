@@ -1,33 +1,23 @@
 #encoding:utf-8
 
 require 'scene/base'
-require 'spriteset/spriteset_play'
+require 'scene/autoload_view'
 
 #  演奏场景
 module Scene
   class Play < Base
-    include Taiko
-    private
 
-    # 开始
-    def start
-      super
-      @spriteset = Spriteset_Play.new
-    end
+    include Taiko
+    include AutoloadView
+
+    private
 
     # 更新
     def update
       super
       started? ? update_after_started : update_before_started
       update_sound_effect
-      @spriteset.update
       update_scene unless scene_changing?
-    end
-
-    # 终止
-    def terminate
-      super
-      @spriteset.dispose
     end
 
     # 更新画面（基础）

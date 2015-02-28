@@ -18,6 +18,7 @@ class Spriteset_Background < Spriteset_M5
     @fumen_back.bitmap = Cache.skin('sfieldbg')
     @fumen_back.x = Skin_Setting.setting(:SfieldbgX)
     @fumen_back.y = Skin_Setting.setting(:SfieldbgY)
+    self.z = -200
   end
   #--------------------------------------------------------------------------
   # ● 释放
