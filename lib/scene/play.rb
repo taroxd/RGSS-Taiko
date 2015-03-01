@@ -102,12 +102,9 @@ module Scene
 
     # 移除丢失的音符
     def shift_missed_notes(notes, hit)
-      note = notes.first
-      return unless note
-      while note && note.over?
+      while (note = notes.first) && note.over?
         notes.shift
         Taiko.hit(note) if hit
-        note = notes.first
       end
     end
 
