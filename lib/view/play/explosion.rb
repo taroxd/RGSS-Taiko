@@ -68,7 +68,7 @@ module View
         return if Taiko.last_hit.performance == :miss
         return unless Taiko.last_hit.normal?
         type = Taiko.last_hit.performance == :perfect ? 0 : 1
-        type += Taiko.last_hit.big? ? 2 : 0
+        type += Taiko.last_hit.double ? 2 : 0
         @finish = Taiko.last_hit.time
         @sprite_upper.reset_and_show(type)
         @sprite_lower.reset_and_show(type)
