@@ -47,7 +47,7 @@ module Scene
         SongData.header name.chomp(EXTNAME)
       end
       if @songlist.empty?
-        raise "There is no .tja file in the directory `#{DIRECTORY}'!"
+        raise "There is no tja file in the folder `#{DIRECTORY}'!"
       end
     end
 
