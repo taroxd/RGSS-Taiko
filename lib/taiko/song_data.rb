@@ -275,7 +275,7 @@ module Taiko
 
     # 确认当前并没有在读取音符
     def invalid_in_a_bar
-      raise SyntaxError, 'unexpected directive' if @interval
+      raise 'unexpected directive' if @interval
     end
 
     # 更新音符速度
@@ -286,14 +286,14 @@ module Taiko
     # 检查是否正在连打
     def check_roll(should_roll = false)
       if should_roll ^ @last_roll
-        raise TypeError, 'unexpected roll note or stop rolling'
+        raise 'unexpected roll note or stop rolling'
       end
     end
 
     # 检查 gogotime
     def check_gogotime(should_num = false)
       if should_num ^ @gogotimes.last.kind_of?(Numeric)
-        raise TypeError, 'unexpected GOGOSTART or GOGOEND'
+        raise 'unexpected GOGOSTART or GOGOEND'
       end
     end
 
@@ -308,8 +308,7 @@ module Taiko
     def check_balloon
       balloons_size = @fumen[BALLOON].values.inject(0) { |a, e| a + e.size }
       if @balloons.size != balloons_size
-        raise ArgumentError,
-          "wrong number of balloons (#{@balloons.size} for #{balloons_size})"
+        raise "wrong number of balloons (#{@balloons.size} for #{balloons_size})"
       end
     end
   end
