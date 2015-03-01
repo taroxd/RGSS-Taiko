@@ -23,9 +23,7 @@ module Scene
     # 开始处理
     def start
       Graphics.resize_screen(480, 272)
-      @songlist = Dir.glob("#{DIRECTORY}/**/*#{EXTNAME}").map do |name|
-        SongData.header name.chomp(EXTNAME)
-      end
+      make_song_list
       super
       play_demo
     end
@@ -42,6 +40,15 @@ module Scene
       super
       update_index
       update_scene unless scene_changing?
+    end
+
+    def make_song_list
+      @songlist = Dir.glob("#{DIRECTORY}/**/*#{EXTNAME}").map do |name|
+        SongData.header name.chomp(EXTNAME)
+      end
+      if @songlist.empty?
+        raise "There is no .tja file in the directory `#{DIRECTORY}'!"
+      end
     end
 
     # 更新光标
