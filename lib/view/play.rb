@@ -1,13 +1,14 @@
 # encoding: utf-8
 
-require 'spriteset/spriteset_background'
-require 'spriteset/spriteset_gogosplash'
-require 'spriteset/spriteset_mtaiko'
-require 'view/fumen'
-require 'spriteset/spriteset_score'
-require 'spriteset/spriteset_combo'
-require 'sprite/sprite_explosion'
-require 'sprite/sprite_judgement'
+require 'view/play/background'
+require 'view/play/gogosplash'
+require 'view/play/m_taiko'
+require 'view/play/fumen'
+require 'view/play/combo'
+require 'view/play/explosion'
+require 'view/play/judgement'
+require 'view/score'
+
 
 module View
 
@@ -50,14 +51,14 @@ module View
 
     def create_all_views
       @views = [
-        Spriteset_Background.new(@viewport1),
-        Spriteset_Gogosplash.new(@viewport1),
-        Spriteset_Mtaiko.new(@viewport1),
+        Background.new(@viewport1),
+        Gogosplash.new(@viewport1),
+        MTaiko.new(@viewport1),
         Fumen.new(@viewport2),
-        Spriteset_Score.new(@viewport3),
-        Spriteset_Combo.new(@viewport3),
-        Spriteset_Explosion.new(@viewport3, @viewport1),
-        Spriteset_Judgement.new(@viewport3)
+        Score.new(@viewport3),
+        Combo.new(@viewport3),
+        Explosion.new(@viewport3, @viewport1),
+        Judgement.new(@viewport3)
       ]
     end
 

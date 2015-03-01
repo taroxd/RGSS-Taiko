@@ -2,7 +2,7 @@
 
 # 显示选曲界面的精灵组。
 
-require 'sprite/song_list'
+require 'view/song_list/songs'
 
 module View
   class SongList
@@ -27,7 +27,7 @@ module View
 
     def create_background
       @background = Sprite.new(@viewport1)
-      @background.bitmap = Bitmap.new('Skin/songselectbg')
+      @background.bitmap = Cache.skin('songselectbg')
     end
 
     def create_viewports
@@ -37,7 +37,7 @@ module View
     end
 
     def create_songlist
-      @songlist = Sprite::SongList.new(@viewport2)
+      @songlist = Songs.new(@viewport2)
     end
 
     def update_songlist
@@ -45,7 +45,6 @@ module View
     end
 
     def dispose_background
-      @background.bitmap.dispose
       @background.dispose
     end
 
