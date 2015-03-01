@@ -70,7 +70,7 @@ module Taiko
 
     # 读取数据
     def load_songdata
-      File.open("#@name#{EXTNAME}") do |f|
+      File.open("#{@name}#{EXTNAME}") do |f|
         @string = f.gets('#START')
         read_header
         @string = f.gets('#END')
@@ -150,8 +150,9 @@ module Taiko
           check_roll
           @fumen[char.to_i][@speed].push(@time.to_i)
           @time += @interval
-        when '5', '6', '7'
+        when '5', '6', '7', '9'
           roll = char.to_i
+          roll = 5 if roll == 9  # 9 is currently not supported
           unless @last_roll == roll
             check_roll
             @last_roll = roll
@@ -307,8 +308,8 @@ module Taiko
     # 检查气球个数
     def check_balloon
       balloons_size = @fumen[BALLOON].values.inject(0) { |a, e| a + e.size }
-      if @balloons.size != balloons_size
-        raise "wrong number of balloons (#{@balloons.size} for #{balloons_size})"
+      if @balloons.size < balloons_size
+        raise "wrong number of balloons (#{@balloons.size} for #{balloons_size}) in the file #{@name}#{EXTNAME}."
       end
     end
   end
