@@ -1,9 +1,6 @@
 
 # 包含该模块后，场景会自动读取 View 文件夹中的内容
 
-module View
-end
-
 module Scene
   module AutoloadView
 

@@ -16,14 +16,8 @@ module View
 
     # 初始化对象
     def initialize
-      load_song_skin
       create_viewports
       create_all_views
-    end
-
-    # 读取歌曲的自定义皮肤
-    def load_song_skin
-      Skin_Setting.load_song_setting(Taiko.songdata.name)
     end
 
     # 更新
@@ -63,13 +57,13 @@ module View
     end
 
     # 获取谱面X坐标
-    def fumen_x; Skin_Setting.setting(:FumenX); end
+    def fumen_x; SkinSettings.fetch(:FumenX); end
 
     # 获取谱面Y坐标
-    def fumen_y; Skin_Setting.setting(:FumenY); end
+    def fumen_y; SkinSettings.fetch(:FumenY); end
 
     # 获取音符判定点X坐标
-    def note_x; Skin_Setting.setting(:NoteX); end
+    def note_x; SkinSettings.fetch(:NoteX); end
 
     def update_all_views
       @views.each(&:update)

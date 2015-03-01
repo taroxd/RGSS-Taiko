@@ -20,15 +20,15 @@ module View
       #--------------------------------------------------------------------------
       # ● 上层特效X坐标
       #--------------------------------------------------------------------------
-      def upper_pos_x; Skin_Setting.setting(:ExplosionUpperX); end
+      def upper_pos_x; SkinSettings.fetch(:ExplosionUpperX); end
       #--------------------------------------------------------------------------
       # ● 上层特效Y坐标
       #--------------------------------------------------------------------------
-      def upper_pos_y; Skin_Setting.setting(:ExplosionUpperY); end
+      def upper_pos_y; SkinSettings.fetch(:ExplosionUpperY); end
       #--------------------------------------------------------------------------
       # ● 上层特效帧数
       #--------------------------------------------------------------------------
-      def upper_frame_max; Skin_Setting.setting(:ExplosionUpperFrame); end
+      def upper_frame_max; SkinSettings.fetch(:ExplosionUpperFrame); end
       #--------------------------------------------------------------------------
       # ● 上层特效持续时间
       #--------------------------------------------------------------------------
@@ -40,15 +40,15 @@ module View
       #--------------------------------------------------------------------------
       # ● 下层特效X坐标
       #--------------------------------------------------------------------------
-      def lower_pos_x; Skin_Setting.setting(:ExplosionLowerX); end
+      def lower_pos_x; SkinSettings.fetch(:ExplosionLowerX); end
       #--------------------------------------------------------------------------
       # ● 下层特效Y坐标
       #--------------------------------------------------------------------------
-      def lower_pos_y; Skin_Setting.setting(:ExplosionLowerY); end
+      def lower_pos_y; SkinSettings.fetch(:ExplosionLowerY); end
       #--------------------------------------------------------------------------
       # ● 下层特效帧数
       #--------------------------------------------------------------------------
-      def lower_frame_max; Skin_Setting.setting(:ExplosionLowerFrame); end
+      def lower_frame_max; SkinSettings.fetch(:ExplosionLowerFrame); end
       #--------------------------------------------------------------------------
       # ● 下层特效持续时间
       #--------------------------------------------------------------------------

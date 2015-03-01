@@ -2,9 +2,6 @@
 
 require 'taiko'
 require 'keyboard'
-
-require 'cache'
-require 'skin_setting'
-
+require 'view'
 require 'scene'
 rgss_main { Scene.run }

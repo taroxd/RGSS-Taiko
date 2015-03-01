@@ -11,8 +11,8 @@ module View
         @scene_back.bitmap = Cache.skin('bg')
         @fumen_back = Sprite.new(viewport)
         @fumen_back.bitmap = Cache.skin('sfieldbg')
-        @fumen_back.x = Skin_Setting.setting(:SfieldbgX)
-        @fumen_back.y = Skin_Setting.setting(:SfieldbgY)
+        @fumen_back.x = SkinSettings.fetch(:SfieldbgX)
+        @fumen_back.y = SkinSettings.fetch(:SfieldbgY)
         self.z = -200
       end
       #--------------------------------------------------------------------------

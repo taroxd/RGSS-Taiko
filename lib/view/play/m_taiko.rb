@@ -107,28 +107,28 @@ module View
       #--------------------------------------------------------------------------
       # ● 太鼓左侧中心位置
       #--------------------------------------------------------------------------
-      def li_pos_x; Skin_Setting.setting(:MtaikoLIX); end
-      def li_pos_y; Skin_Setting.setting(:MtaikoLIY); end
+      def li_pos_x; SkinSettings.fetch(:MtaikoLIX); end
+      def li_pos_y; SkinSettings.fetch(:MtaikoLIY); end
       #--------------------------------------------------------------------------
       # ● 太鼓左侧外部位置
       #--------------------------------------------------------------------------
-      def lo_pos_x; Skin_Setting.setting(:MtaikoLOX); end
-      def lo_pos_y; Skin_Setting.setting(:MtaikoLOY); end
+      def lo_pos_x; SkinSettings.fetch(:MtaikoLOX); end
+      def lo_pos_y; SkinSettings.fetch(:MtaikoLOY); end
       #--------------------------------------------------------------------------
       # ● 太鼓右侧中心位置
       #--------------------------------------------------------------------------
-      def ri_pos_x; Skin_Setting.setting(:MtaikoRIX); end
-      def ri_pos_y; Skin_Setting.setting(:MtaikoRIY); end
+      def ri_pos_x; SkinSettings.fetch(:MtaikoRIX); end
+      def ri_pos_y; SkinSettings.fetch(:MtaikoRIY); end
       #--------------------------------------------------------------------------
       # ● 太鼓右侧外部位置
       #--------------------------------------------------------------------------
-      def ro_pos_x; Skin_Setting.setting(:MtaikoROX); end
-      def ro_pos_y; Skin_Setting.setting(:MtaikoROY); end
+      def ro_pos_x; SkinSettings.fetch(:MtaikoROX); end
+      def ro_pos_y; SkinSettings.fetch(:MtaikoROY); end
       #--------------------------------------------------------------------------
       # ● 谱面闪烁位置
       #--------------------------------------------------------------------------
-      def sf_pos_x; Skin_Setting.setting(:MtaikoSFX); end
-      def sf_pos_y; Skin_Setting.setting(:MtaikoSFY); end
+      def sf_pos_x; SkinSettings.fetch(:MtaikoSFX); end
+      def sf_pos_y; SkinSettings.fetch(:MtaikoSFY); end
     end
   end
 end
