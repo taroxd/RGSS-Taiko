@@ -151,9 +151,12 @@ module Taiko
           @fumen[char.to_i][@speed].push(@time.to_i)
           @time += @interval
         when '5', '6', '7'
-          check_roll
-          @last_roll = char.to_i
-          @fumen[@last_roll][@speed].push(@time.to_i)
+          roll = char.to_i
+          unless @last_roll == roll
+            check_roll
+            @last_roll = roll
+            @fumen[roll][@speed].push(@time.to_i)
+          end
           @time += @interval
         when '8'
           check_roll(true)
