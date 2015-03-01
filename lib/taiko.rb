@@ -16,6 +16,7 @@ module Taiko
   PERFECT_JUDGE = 25
   GREAT_JUDGE = 75
   MISS_JUDGE = 108
+  DOUBLE_TOLERANCE = 2               # 同时按下的允许误差
 
   # 文件设置
   DIRECTORY = 'Songs'                # 谱面文件的位置

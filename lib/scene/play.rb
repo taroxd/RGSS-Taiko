@@ -10,6 +10,17 @@ module Scene
     include Taiko
     include AutoloadView
 
+    PendingNote = Struct.new(:notes, :note, :frame) do
+
+      def update
+        self.frame -= 1
+        if frame.zero?
+          Taiko.hit(note)
+          notes.shift
+        end
+      end
+    end
+
     private
 
     # 更新
@@ -40,21 +51,9 @@ module Scene
 
     # 更新音符的击打
     def update_hit
-      update_pending_note
+      @pending_note.update if @pending_note
       update_inner if Keyboard.inner?
       update_outer if Keyboard.outer?
-    end
-
-    # 更新已经击打过一遍的大音符
-    def update_pending_note
-      return unless @pending_note
-      return unless (@pending_note[2] -= 1) == 0
-      notes, note = @pending_note
-      if note.valid?
-        Taiko.hit(note)
-        notes.shift
-      end
-      @pending_note = nil
     end
 
     # 更新鼓面的击打
@@ -76,8 +75,10 @@ module Scene
       note = notes.first
       return if !note || !note.performance
       note.double = double
-      if note.big? && !double
-        @pending_note = notes, note, 2
+      if @pending_note && @pending_note.note.equal?(note)
+        @pending_note = nil
+      elsif note.big? && !double
+        @pending_note = PendingNote[notes, note, DOUBLE_TOLERANCE]
         return
       end
       Taiko.hit(note)

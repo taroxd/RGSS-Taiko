@@ -12,7 +12,7 @@ module Keyboard
 
   class << self
 
-  # 每个键分别按住了多少帧
+    # 每个键分别按住了多少帧
     STATES = {
       LEFT_OUTER  => 0,
       LEFT_INNER  => 0,
@@ -61,13 +61,13 @@ module Keyboard
     # 是否同时按下两个鼓面
     def both_inner?
       min, max = [STATES[LEFT_INNER], STATES[RIGHT_INNER]].minmax
-      min == 1 && max < 3
+      min == 1 && max <= Taiko::DOUBLE_TOLERANCE
     end
 
     # 是否同时按下两个鼓边
     def both_outer?
-      min, max = [STATES[LEFT_INNER], STATES[RIGHT_INNER]].minmax
-      min == 1 && max < 3
+      min, max = [STATES[LEFT_OUTER], STATES[RIGHT_OUTER]].minmax
+      min == 1 && max <= Taiko::DOUBLE_TOLERANCE
     end
 
     private
