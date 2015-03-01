@@ -1,7 +1,8 @@
 *.rvdata2
-!/Data/Scripts.rvdata2
+/Data
 /Graphics
 /Movies
+/Songs
 Game.rvproj2
 
 # Windows
