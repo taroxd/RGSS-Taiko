@@ -2,10 +2,14 @@
 
 # 选曲列表
 
+require 'view/dispose_bitmap'
+
 module View
   class SongList
 
     class Songs < Sprite
+
+      include DisposeBitmap
 
       FONT = Font.new('simhei', 14)
       LINE_HEIGHT = 30

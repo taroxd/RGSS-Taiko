@@ -41,7 +41,6 @@ module View
         @sprite_list.compact!
         @sprite_list.each(&:dispose)
         @fire.dispose
-        @bitmap.dispose
       end
       #--------------------------------------------------------------------------
       # ● 获取位图

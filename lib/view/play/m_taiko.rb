@@ -4,9 +4,9 @@ require 'view/play/m_taiko/m_taikoh.rb'
 
 module View
   class Play
-  class MTaiko
-    #--------------------------------------------------------------------------
-    # ● 初始化
+    class MTaiko
+      #--------------------------------------------------------------------------
+      # ● 初始化
       #--------------------------------------------------------------------------
       def initialize(viewport = nil)
         temp_bitmap = Cache.skin("mtaikoflash_red")
