@@ -9,6 +9,7 @@ module View
         # ● 重置并显示
         #--------------------------------------------------------------------------
         def reset_and_show(note)
+          return unless note.normal?
           self.bitmap = Cache.note(note)
           @frame = 0
           set_frame
