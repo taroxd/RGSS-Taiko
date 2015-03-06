@@ -50,7 +50,6 @@ module Taiko
       @next_course.prev_course = self
       @next_course
     rescue EOFError
-      @file.close
       @next_course = false
     end
 
@@ -58,7 +57,7 @@ module Taiko
 
     attr_writer :prev_course
 
-    # 读取下一难度。
+    # 读取下一难度
     def read_next_course
       @fumen = @fumen_string = nil
       read_header
@@ -82,7 +81,7 @@ module Taiko
       @file = File.open("#{@name}#{EXTNAME}")
     end
 
-    # 读取歌曲头部信息。
+    # 读取歌曲头部信息
     def read_header
       read_until('#START').gsub(COMMENT_RE, '').each_line do |line|
         if line =~ HEADER_RE
@@ -103,7 +102,7 @@ module Taiko
 
     alias_method :read_fumen_string, :fumen_string
 
-    # 读取谱面信息。在读取头部信息之后调用。
+    # 读取谱面信息。在读取头部信息之后调用
     def parse_fumen
       @fumen = Array.new(8) { Hash.new { |h, k| h[k] = [] } }
 
@@ -145,7 +144,7 @@ module Taiko
       240000.0 / @bpm * @measure[0] / @measure[1]
     end
 
-    # 读取指令
+    # 读取指令。读取失败时返回伪值。
     def read_directive
       if @line =~ DIRECTIVE_RE
         sym = :"directive_#{$1.downcase}"
@@ -298,7 +297,7 @@ module Taiko
       @speed = @bpm * @scroll / 500.0
     end
 
-    # 当前是否进入了 gogotime 状态。
+    # 当前是否进入了 gogotime 状态
     def in_gogotime?
       @gogotimes.last.kind_of?(Numeric)
     end
@@ -313,7 +312,7 @@ module Taiko
       @gogotimes[-1] = @gogotimes[-1]..@time.to_i if in_gogotime?
     end
 
-    # 向谱面中添加一个音符。
+    # 向谱面中添加一个音符
     def add_note(type, is_roll = false)
       if @last_roll
         if type != BARLINE && type != @last_roll
@@ -325,7 +324,7 @@ module Taiko
       end
     end
 
-    # 结束连打音符。
+    # 结束连打音符
     def end_roll
       if @last_roll
         notes = @fumen[@last_roll][@speed]
@@ -362,7 +361,12 @@ module Taiko
 
     # 读取文件。到文件尾时抛出 EOFError。
     def read_until(sep)
-      @file.readline(sep)
+      ret = @file.readline(sep)
+      if @file.eof?
+        @file.close
+        raise EOFError
+      end
+      ret
     end
   end
 end
