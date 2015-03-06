@@ -12,10 +12,10 @@ module Taiko
     # 添加音符 -> self
     def <<(performance)
       @value += case performance
-        when :perfect then 6
-        when :great   then 3
-        when :miss    then -12
-        end
+      when :perfect then 6
+      when :great   then 3
+      when :miss    then -12
+      end
       @value = 0    if @value < 0
       @value = @max if @value > @max
       self
