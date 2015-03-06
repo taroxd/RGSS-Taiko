@@ -14,8 +14,8 @@ module Scene
     @@index = 0
 
     # 当前曲名
-    def header(offset = 0)
-      @songlist[(@@index + offset) % @songlist.size]
+    def songdata(offset = 0)
+      @songlist[songlist_index(offset)]
     end
 
     private
@@ -39,12 +39,18 @@ module Scene
     def update
       super
       update_index
+      update_course(true)  if Input.trigger?(:RIGHT)
+      update_course(false) if Input.trigger?(:LEFT)
       update_scene unless scene_changing?
+    end
+
+    def songlist_index(offset = 0)
+      (@@index + offset) % @songlist.size
     end
 
     def make_song_list
       @songlist = Dir.glob("#{DIRECTORY}/**/*#{EXTNAME}").map do |name|
-        SongData.header name.chomp(EXTNAME)
+        SongData.new name.chomp(EXTNAME)
       end
       if @songlist.empty?
         raise "There is no tja file in the folder `#{DIRECTORY}'!"
@@ -65,17 +71,25 @@ module Scene
       end
     end
 
+    # 更新难度。to_next: 是否向下一难度
+    def update_course(to_next)
+      new_data = to_next ? songdata.next_course : songdata.prev_course
+      if new_data
+        @songlist[songlist_index] = new_data
+        Audio.se_play 'Audio/SE/dong'
+      end
+    end
+
     # 播放预览
     def play_demo
       Audio.bgm_stop
-      Audio.bgm_play header.wave, header.song_vol, 100
+      Audio.bgm_play songdata.wave, songdata.song_vol, 100
     end
-
 
     def update_scene
       if Input.trigger?(:C)
         Audio.se_play 'Audio/SE/dong'
-        Taiko.setup header.name
+        Taiko.setup songdata
         fadeout_all(120)
         Scene.call(Play)
       end

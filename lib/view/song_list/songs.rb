@@ -22,17 +22,17 @@ module View
       end
 
       def update
-        refresh unless @header.equal?(header)
+        refresh unless @songdata.equal?(songdata)
       end
 
       private
 
-      def header(offset = 0)
-        Scene.scene.header(offset)
+      def songdata(offset = 0)
+        Scene.scene.songdata(offset)
       end
 
       def refresh
-        @header = header
+        @songdata = songdata
         bitmap.clear
         draw_up
         draw_current
@@ -40,30 +40,30 @@ module View
       end
 
       # 绘制简单的歌曲信息
-      def draw_simple_info(header, x, y, width = 340, height = LINE_HEIGHT)
-        bitmap.draw_text(x, y, width, height, header.title)
-        bitmap.draw_text(x, y, width, height, "★#{header.level}", 2)
+      def draw_simple_info(songdata, x, y, width = 340, height = LINE_HEIGHT)
+        bitmap.draw_text(x, y, width, height, songdata.title)
+        bitmap.draw_text(x, y, width, height, "★#{songdata.level}", 2)
       end
 
       # 绘制上方的歌曲信息
       def draw_up
         (-3).upto(-1) do |i|
-          draw_simple_info(header(i), 60, 105 + i * LINE_HEIGHT)
+          draw_simple_info(songdata(i), 60, 105 + i * LINE_HEIGHT)
         end
       end
 
       # 绘制下方的歌曲信息
       def draw_down
         1.upto(3) do |i|
-          draw_simple_info(header(i), 60, 125 + i * LINE_HEIGHT)
+          draw_simple_info(songdata(i), 60, 125 + i * LINE_HEIGHT)
         end
       end
 
       # 绘制选中的歌曲信息
       def draw_current
-        draw_simple_info(@header, 120, 110, 340)
+        draw_simple_info(@songdata, 120, 110, 340)
         #TODO: 绘制全连的皇冠，当前分数等信息
-        # playdata = Taiko.load(@header.name)
+        # playdata = Taiko.load(@songdata.name)
         # if playdata  # 有记录成绩
         #   if playdata[:miss] == 0
         #     画金冠

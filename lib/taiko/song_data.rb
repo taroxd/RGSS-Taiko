@@ -1,60 +1,73 @@
-#encoding:utf-8
+# encoding: utf-8
 
-#  管理谱面文件的读取以及谱面信息的类。
+# 管理谱面文件的读取以及谱面信息的类。
 
 module Taiko
   class SongData
+
     HEADER_RE = /#?(\w+) *:?(.*)/      # 头部设定
     DIRECTIVE_RE = /^# *(\w+) *:?(.*)/ # 谱面中指令
     COMMENT_RE = /\/\/.+/              # 注释
+
+    TJAError = Class.new(StandardError)
+
     attr_reader(
-
-      # 谱面，一个哈希表。
-      # 键为 type（取值见 Taiko 的常量），
-      # 值为一个哈希表，其中键为音符的速度，值为对应该速度的音符时机构成的数组。
-      :fumen,
-
       # 不包含扩展名的文件路径
       :name,
 
       # TJA 文件头部指定的信息
       :title, :subtitle, :wave, :balloons, :score_init,
-      :score_diff, :song_vol, :se_vol, :level,
+      :score_diff, :song_vol, :se_vol, :level, :course,
 
       # gogotimes 的范围（Range）构成的数组
-      :gogotimes
+      :gogotimes,
+
+      # 前一难度的 songdata。若不存在，返回伪值。
+      :prev_course
     )
 
-    # 读取头部信息
-    def self.header(name)
-      new.tap { |data| data.header = name }
-    end
-
-    # 初始化
-    def initialize(name = nil)
-      self.name = name if name
-    end
-
-    # 设置文件名并读取文件
-    def name=(name)
+    # name: 文件名（不包含后缀）
+    def initialize(name)
       @name = name
       init_data
-      load_songdata
-      check_validity
+      read_header
     end
 
-    # 设置文件名并读取头部信息
-    def header=(name)
-      @name = name
-      init_data
-      load_header
+    # 谱面，一个哈希表。
+    # 键为 type（取值见 Taiko 的常量），
+    # 值为一个哈希表，其中键为音符的速度，值为对应该速度的音符时机构成的数组。
+    def fumen
+      parse_fumen unless @fumen
+      @fumen
+    end
+
+    # 返回下一难度的 songdata。若不存在，返回伪值。
+    def next_course
+      return @next_course unless @next_course.nil?
+      read_fumen_string   # 如果只读取了 header，先读取所有谱面的内容
+      @next_course = dup
+      @next_course.read_next_course
+      @next_course.prev_course = self
+      @next_course
+    rescue EOFError
+      @file.close
+      @next_course = false
+    end
+
+    protected
+
+    attr_writer :prev_course
+
+    # 读取下一难度。
+    def read_next_course
+      @fumen = @fumen_string = nil
+      read_header
     end
 
     private
 
     # 初始化数据
     def init_data
-      @fumen = Array.new(8) { Hash.new { |h, k| h[k] = [] } }
       @wave = @name
       @bpm = 120.0
       @time = 0.0
@@ -66,61 +79,65 @@ module Taiko
       @barline_on = true
       @balloons = []
       @gogotimes = []
+      @file = File.open("#{@name}#{EXTNAME}")
     end
 
-    # 读取数据
-    def load_songdata
-      File.open("#{@name}#{EXTNAME}") do |f|
-        @string = f.gets('#START')
-        read_header
-        @string = f.gets('#END')
-      end
-      read_contents
-    end
-
-    # 读取头部数据
-    def load_header
-      File.open("#@name#{EXTNAME}") { |f| @string = f.gets('#START') }
-      read_header
-    end
-
-    # 读取歌曲基本信息
+    # 读取歌曲头部信息。
     def read_header
-      @string.gsub!(COMMENT_RE, '')
-      @string.each_line do |line|
+      read_until('#START').gsub(COMMENT_RE, '').each_line do |line|
         if line =~ HEADER_RE
           sym = :"header_#{$1.downcase}"
-          if respond_to? sym, true
+          if respond_to?(sym, true)
             @contents = $2
-            send sym
+            send(sym)
           end
         end
       end
     end
 
-    # 读取谱面信息
-    def read_contents
-      @string.gsub!(COMMENT_RE, '')
-      @string.each_line(',') do |bar|
+    # 读取谱面的内容
+    def fumen_string
+      return @fumen_string if @fumen_string
+      @fumen_string = read_until('#END')
+    end
+
+    alias_method :read_fumen_string, :fumen_string
+
+    # 读取谱面信息。在读取头部信息之后调用。
+    def parse_fumen
+      @fumen = Array.new(8) { Hash.new { |h, k| h[k] = [] } }
+
+      fumen_string.gsub(COMMENT_RE, '').each_line(',') do |bar|
         lines = bar.each_line.map(&:strip)
-        while @line = lines.first
+
+        # 读取小节间的指令
+        while (@line = lines.first)
           @line.empty? || read_directive ? lines.shift : break
         end
-        @fumen[0][@speed].push(@time.to_i) if @barline_on
+
+        # 添加小节线
+        add_note(BARLINE) if @barline_on
+
+        # 计算小节内的音符总数
         count = lines.inject(0) do |a, line|
           line =~ DIRECTIVE_RE ? a : a + line.count('0-9')
         end
+
+        # 读取小节内容
         if count == 0
           @time += bar_length
         else
           @interval = bar_length / count
           lines.each do |line|
             @line = line
-            read_directive || read_fumen
+            read_directive || read_notes
           end
           @interval = nil
         end
       end
+
+      set_gogoend
+      check_validity
     end
 
     # 小节长度
@@ -140,32 +157,18 @@ module Taiko
       end
     end
 
-    # 读取谱面
-    def read_fumen
+    # 读取音符
+    def read_notes
       @line.each_char do |char|
-        case char
-        when '0'
-          @time += @interval
-        when '1', '2', '3', '4'
-          check_roll
-          @fumen[char.to_i][@speed].push(@time.to_i)
-          @time += @interval
-        when '5', '6', '7', '9'
-          roll = char.to_i
-          roll = 5 if roll == 9  # 9 is currently not supported
-          unless @last_roll == roll
-            check_roll
-            @last_roll = roll
-            @fumen[roll][@speed].push(@time.to_i)
-          end
-          @time += @interval
-        when '8'
-          check_roll(true)
-          notes = @fumen[@last_roll][@speed]
-          notes[-1] = notes[-1]..@time.to_i
-          @last_roll = nil
-          @time += @interval
+        next unless char.between?('0', '9')
+        type = char.to_i
+        case type
+        when 1, 2, 3, 4 then add_note(type, false)
+        when 5, 6, 7 then add_note(type, true)
+        when 8 then end_roll
+        when 9 then add_note(5, true) # 9 is currently not supported
         end
+        @time += @interval
       end
     end
 
@@ -181,7 +184,7 @@ module Taiko
 
     # 获取 bpm
     def header_bpm
-      invalid_in_a_bar
+      invalid_in_a_bar('BPMCHANGE')
       @bpm = @contents.to_f
       update_speed
     end
@@ -193,7 +196,7 @@ module Taiko
 
     # 获取拍号
     def header_measure
-      invalid_in_a_bar
+      invalid_in_a_bar('MEASURE')
       if @contents =~ /(\d+)(?:\s+|\s*\/\s*)(\d+)/i
         @measure = [$1.to_i, $2.to_i]
       end
@@ -241,6 +244,19 @@ module Taiko
       @balloons = @contents.split(sep).map(&:to_i)
     end
 
+    # 获取难度
+    def header_course
+      @course = @contents.to_i
+    end
+
+    # 跳过双人谱面
+    def header_style
+      if @contents.downcase.include?('double')
+        2.times { read_until('#END') }
+        read_header
+      end
+    end
+
     # 指令集
     alias_method :directive_bpm, :header_bpm
     alias_method :directive_bpmchange, :header_bpm
@@ -249,14 +265,12 @@ module Taiko
 
     # GGT 开始
     def directive_gogostart
-      check_gogotime(false)
-      @gogotimes.push(@time.to_i)
+      set_gogostart || tjaerror('unexpected #GOGOSTART')
     end
 
     # GGT 结束
     def directive_gogoend
-      check_gogotime(true)
-      @gogotimes[-1] = @gogotimes[-1]..@time.to_i
+      set_gogoend || tjaerror('unexpected #GOGOEND')
     end
 
     # 打开小节线
@@ -275,8 +289,8 @@ module Taiko
     end
 
     # 确认当前并没有在读取音符
-    def invalid_in_a_bar
-      raise 'unexpected directive' if @interval
+    def invalid_in_a_bar(directive)
+      tjaerror "unexpected ##{directive} inside a bar" if @interval
     end
 
     # 更新音符速度
@@ -284,33 +298,71 @@ module Taiko
       @speed = @bpm * @scroll / 500.0
     end
 
-    # 检查是否正在连打
-    def check_roll(should_roll = false)
-      if should_roll ^ @last_roll
-        raise 'unexpected roll note or stop rolling'
+    # 当前是否进入了 gogotime 状态。
+    def in_gogotime?
+      @gogotimes.last.kind_of?(Numeric)
+    end
+
+    # 设置 gogotime 的起点。设置失败时返回伪值。
+    def set_gogostart
+      @gogotimes.push(@time.to_i) unless in_gogotime?
+    end
+
+    # 设置 gogotime 的终点。设置失败时返回伪值。
+    def set_gogoend
+      @gogotimes[-1] = @gogotimes[-1]..@time.to_i if in_gogotime?
+    end
+
+    # 向谱面中添加一个音符。
+    def add_note(type, is_roll = false)
+      if @last_roll
+        if type != BARLINE && type != @last_roll
+          tjaerror "unexpected note (#{type}), expecting roll end (8)"
+        end
+      else
+        @fumen[type][@speed].push(@time.to_i)
+        @last_roll = type if is_roll
       end
     end
 
-    # 检查 gogotime
-    def check_gogotime(should_num = false)
-      if should_num ^ @gogotimes.last.kind_of?(Numeric)
-        raise 'unexpected GOGOSTART or GOGOEND'
+    # 结束连打音符。
+    def end_roll
+      if @last_roll
+        notes = @fumen[@last_roll][@speed]
+        notes[-1] = notes[-1]..@time.to_i
+        @last_roll = nil
+      else
+        tjaerror 'unexpected roll end (8)'
       end
     end
 
     # 检查谱面
     def check_validity
       check_balloon
-      check_roll
-      check_gogotime
+      check_roll_end
     end
 
     # 检查气球个数
     def check_balloon
       balloons_size = @fumen[BALLOON].values.inject(0) { |a, e| a + e.size }
       if @balloons.size < balloons_size
-        raise "wrong number of balloons (#{@balloons.size} for #{balloons_size}) in the file #{@name}#{EXTNAME}."
+        tjaerror "wrong number of balloons (#{@balloons.size} for #{balloons_size})"
       end
+    end
+
+    # 检查连打是否正常结束
+    def check_roll_end
+      tjaerror 'unexpected #END, expecting roll end (8)' if @last_roll
+    end
+
+    # 抛出异常
+    def tjaerror(message)
+      raise TJAError, message
+    end
+
+    # 读取文件。到文件尾时抛出 EOFError。
+    def read_until(sep)
+      @file.readline(sep)
     end
   end
 end

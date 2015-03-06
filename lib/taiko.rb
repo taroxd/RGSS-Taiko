@@ -95,9 +95,9 @@ module Taiko
     end
 
     # 准备
-    def setup(name)
-      @name = name
+    def setup(songdata)
       clear
+      GLOBAL[:songdata] = songdata
       init_game_objects
     end
 
@@ -152,7 +152,6 @@ module Taiko
 
     # 初始化游戏对象
     def init_game_objects
-      GLOBAL[:songdata] = SongData.new(@name)
       GLOBAL[:fumen] = Fumen.new
       GLOBAL[:gauge] = Gauge.new
     end
