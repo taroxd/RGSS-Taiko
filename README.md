@@ -6,12 +6,12 @@ Taiko no datsujin (RGSS version)
 Download available at <https://github.com/taroxd/RGSS-Taiko/releases>.
 
 ## How To Play ##
-Put your tja and ogg file in the "Song" Folder.  
-About tja file, see [taikojiro](http://www.nicovideo.jp/watch/sm5463901) for more details.  
+Put your tja and ogg files in the "Song" Folder.  
+About tja files, see [taikojiro](http://www.nicovideo.jp/watch/sm5463901) for more details.  
 All the tja function is not supported currently.
 
 Note that:
-* The tja file must be UTF-8 encoded.
+* Tja files must be UTF-8 encoded.
 * The project must be placed in a path that contains no Non-ASCII character.
 
 Press UP and DOWN arrow keys to select a song. Press LEFT and RIGHT arrow keys to select a course.
@@ -37,3 +37,7 @@ require 'main'
 
 For debugging, uncomment the line `require 'debug'` in `main.rb`.
 This will set $TEST to true and allocate a console for input and output, just as the RPG Maker VX Ace does.
+
+## Contribute ##
+
+Just send a pull request.
