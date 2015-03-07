@@ -9,7 +9,7 @@ require 'taiko/gauge'
 module Taiko
 
   # 游戏常量
-  VERSION = 0.03                     # 当前版本
+  VERSION = 0.04                     # 当前版本
   VALID_OLDEST_VERSION = 0.01        # 分数有效的最低版本
 
   # 判定等级
