@@ -364,7 +364,7 @@ module Taiko
     # 读取文件并清除注释。到文件尾时抛出 EOFError。
     def read_until(sep)
       ret = @file.readline(sep)
-      unless ret.end_with?(ret)
+      unless ret.end_with?(sep)
         @file.close
         raise EOFError
       end
