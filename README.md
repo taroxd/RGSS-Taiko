@@ -25,9 +25,12 @@ Press UP and DOWN arrow keys to select a song. Press LEFT and RIGHT arrow keys t
 
 This is an implementation of Taiko with the help of RPG Maker VX Ace.  
 No database, no map, no event.  
-The script in the Data/Scripts.rvdata2 is as follows.
+The script in the `Data/Scripts.rvdata2` is as follows.
 
 ```ruby
 $LOAD_PATH.push('./lib')
 require 'main'
 ```
+
+For debugging, uncomment the line `require 'debug'` in `main.rb`.
+This will set $TEST to true and allocate a console for input and output, just as the RPG Maker VX Ace does.
