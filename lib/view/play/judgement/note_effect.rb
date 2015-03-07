@@ -5,11 +5,21 @@ module View
   class Play
     class Judgement
       class NoteEffect < Animation
+        def initialize(viewport)
+          super(viewport,
+            {
+              x: SkinSettings.fetch(:NoteEffectX),
+              y: SkinSettings.fetch(:NoteEffectY),
+              z: 0,
+            },
+            {duration: 10}
+          )
+        end
         #--------------------------------------------------------------------------
         # ● 重置并显示
         #--------------------------------------------------------------------------
         def reset_and_show(note)
-          self.bitmap = Cache.note(note)
+          self.bitmap = Cache.note_head(note.type)
           @frame = 0
           set_frame
           show

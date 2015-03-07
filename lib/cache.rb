@@ -69,6 +69,12 @@ module Cache
       end
     end
 
+    def note_head(type)
+      load("note-#{type}-#{Taiko::NOTE_SIZE}") do
+        note Taiko::Note[type, 0..0, 0]
+      end
+    end
+
     # 删除缓存中的连打音符
     def clear_rolls
       @cache.delete_if do |key, bitmap|

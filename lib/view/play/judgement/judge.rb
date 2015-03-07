@@ -4,11 +4,21 @@ require 'view/animation'
 module View
   class Play
     class Judge < Animation
+      def initialize(viewport)
+        super(viewport,
+          {
+            x: SkinSettings.fetch(:JudgementX),
+            y: SkinSettings.fetch(:JudgementY),
+            z: 100,
+          },
+          {duration: 30}
+        )
+      end
       #--------------------------------------------------------------------------
       # ● 设置精灵的位图
       #--------------------------------------------------------------------------
       def get_bitmap(_)
-        Cache.skin("judgement")
+        Cache.skin('judgement')
       end
       #--------------------------------------------------------------------------
       # ● 设置帧的高度
