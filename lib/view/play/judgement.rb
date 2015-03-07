@@ -59,16 +59,16 @@ module View
       def update
         @judge.update
         @note.update
-        return unless Taiko.last_hit
-        return if @finish == Taiko.last_hit.time
-        type = case Taiko.last_hit.performance
-               when :miss    then 2
-               when :great   then 1
-               else               0
+        return if @last_hit == Taiko.last_hit
+        @last_hit = Taiko.last_hit
+        return if !@last_hit || !@last_hit.normal?
+        type = case @last_hit.performance
+               when :miss  then 2
+               when :great then 1
+               else             0
                end
-        @finish = Taiko.last_hit.time
-        @judge.reset_and_show(type) unless Taiko.last_hit.valid?
-        @note.reset_and_show(Taiko.last_hit) unless type == 2
+        @judge.reset_and_show(type)
+        @note.reset_and_show(@last_hit) unless type == 2
       end
       #--------------------------------------------------------------------------
       # ● 释放
