@@ -7,6 +7,7 @@ require 'view/play/fumen'
 require 'view/play/combo'
 require 'view/play/explosion'
 require 'view/play/judgement'
+require 'view/play/note_fly'
 require 'view/score'
 
 
@@ -52,7 +53,8 @@ module View
         Score.new(@viewport3),
         Combo.new(@viewport3),
         Explosion.new(@viewport3, @viewport1),
-        Judgement.new(@viewport3)
+        Judgement.new(@viewport3),
+        NoteFly.new(@viewport3)
       ]
     end
 

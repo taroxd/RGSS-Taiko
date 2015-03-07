@@ -1,35 +1,34 @@
 # encoding: utf-8
-# 显示打击准确度和音符飞起的效果
+# 显示打击准确度的效果
 
-require 'view/view_container'
-require 'view/play/judgement/judge'
-require 'view/play/judgement/note_effect'
+require 'view/animation'
 
 module View
   class Play
-    class Judgement
+    class Judgement < Animation
 
       def initialize(viewport)
-        @note_effects = ViewContainer.new(NoteEffect, viewport)
-        @judge = Judge.new(viewport)
+        super(viewport,
+          {
+            x: SkinSettings.fetch(:JudgementX),
+            y: SkinSettings.fetch(:JudgementY),
+            z: 100,
+          },
+          {duration: 30}
+        )
       end
 
       def update
         return unless Taiko.last_hit
         if @last_hit != Taiko.last_hit
           @last_hit = Taiko.last_hit
-          @last_hit_status = nil
-          reset_judge if @last_hit.normal?
+          reset_and_show if @last_hit.normal?
         end
 
-        @note_effects.yield_view { |v| v.reset_and_show(@last_hit) } if note_effect_show?
-        @judge.update
-        @note_effects.update
-      end
-
-      def dispose
-        @note_effects.dispose
-        @judge.dispose
+        super
+        return unless self.visible
+        return unless self.bitmap
+        update_change_effect
       end
 
       private
@@ -40,15 +39,50 @@ module View
         when :great then 1
         else             0
         end
-        @judge.reset_and_show(type)
+        reset_and_show(type)
       end
 
-      def note_effect_show?
-        return false if @last_hit.performance == :miss
-        return false if @last_hit.balloon?
-        return false if @last_hit_status == @last_hit.status
-        @last_hit_status = @last_hit.status
-        true
+      def get_bitmap(_)
+        Cache.skin('judgement')
+      end
+
+      # 设置帧的高度
+      def frame_height
+        self.bitmap.height / 3
+      end
+
+      # 设置当前帧Y坐标
+      def frame_y
+        @frame_y || 0
+      end
+
+      # 重置并显示
+      def reset_and_show
+        type = case @last_hit.performance
+        when :miss  then 2
+        when :great then 1
+        else             0
+        end
+        @frame = 0
+        @frame_y = self.bitmap.height / 3 * type
+        set_frame
+        show
+        set_change_effect
+      end
+
+      # 设置图像变更时的特效
+      def set_change_effect
+        self.y = @change_effect[1] if @change_effect
+        @change_effect = [8, self.y]
+        self.y += @change_effect[0]
+      end
+
+      # 更新图像变更时的特效
+      def update_change_effect
+        if @change_effect[0] > 0
+          self.y -= 2
+          @change_effect[0] -= 2
+        end
       end
     end
   end
