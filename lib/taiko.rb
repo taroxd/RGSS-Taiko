@@ -63,10 +63,10 @@ module Taiko
   def gauge;      GLOBAL[:gauge];          end    # 魂槽（Gauge）
   def play_time;  GLOBAL[:play_time] || 0; end    # 游戏时间（毫秒）
   def score;      PLAYDATA[:score];        end    # 当前分数
-  def song_vol;   songdata.song_vol;       end    # 歌曲音量
-  def se_vol;     songdata.se_vol;         end    # 音效音量
-  def score_init; songdata.score_init;     end    # 初项
-  def score_diff; songdata.score_diff;     end    # 公差
+  def songvol;   songdata.songvol;         end    # 歌曲音量
+  def sevol;     songdata.sevol;           end    # 音效音量
+  def scoreinit; songdata.scoreinit;       end    # 初项
+  def scorediff; songdata.scorediff;       end    # 公差
   alias_method :started?, :start_time
   module_function :started?
 
@@ -89,7 +89,7 @@ module Taiko
   class << self
     # 开始游戏
     def start
-      Audio.me_play(songdata.wave, song_vol)
+      Audio.me_play(songdata.wave, songvol)
       GLOBAL[:start_time] = msec
       update_time
     end

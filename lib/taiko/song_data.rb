@@ -16,8 +16,8 @@ module Taiko
       :name,
 
       # TJA 文件头部指定的信息
-      :title, :subtitle, :wave, :balloons, :score_init,
-      :score_diff, :song_vol, :se_vol, :level, :course,
+      :title, :subtitle, :wave, :balloons, :scoreinit,
+      :scorediff, :songvol, :sevol, :level, :course,
 
       # gogotimes 的范围（Range）构成的数组
       :gogotimes,
@@ -71,10 +71,10 @@ module Taiko
       @bpm = 120.0
       @time = 0.0
       @measure = [4, 4]
-      @score_init = 100
-      @score_diff = 20
+      @scoreinit = 100
+      @scorediff = 20
       @scroll = 1.0
-      @se_vol = @song_vol = 100
+      @sevol = @songvol = 100
       @barline_on = true
       @balloons = []
       @gogotimes = []
@@ -83,7 +83,7 @@ module Taiko
 
     # 读取歌曲头部信息
     def read_header
-      read_until('#START').gsub(COMMENT_RE, '').each_line do |line|
+      read_until("\n#START").each_line do |line|
         if line =~ HEADER_RE
           sym = :"header_#{$1.downcase}"
           if respond_to?(sym, true)
@@ -97,7 +97,7 @@ module Taiko
     # 读取谱面的内容
     def fumen_string
       return @fumen_string if @fumen_string
-      @fumen_string = read_until('#END')
+      @fumen_string = read_until("\n#END")
     end
 
     alias_method :read_fumen_string, :fumen_string
@@ -106,7 +106,7 @@ module Taiko
     def parse_fumen
       @fumen = Array.new(8) { Hash.new { |h, k| h[k] = [] } }
 
-      fumen_string.gsub(COMMENT_RE, '').each_line(',') do |bar|
+      fumen_string.each_line(',') do |bar|
         lines = bar.each_line.map(&:strip)
 
         # 读取小节间的指令
@@ -171,21 +171,46 @@ module Taiko
       end
     end
 
-    # 获取歌曲名
-    def header_title
-      @title = @contents
+    def self.define_header(name, conversion = nil)
+      class_eval <<-EOF, __FILE__, __LINE__
+        def header_#{name}
+          @#{name} = #{conversion}(@contents)
+        #{if conversion
+            "rescue ArgumentError
+               @#{name}"
+          end
+        }
+        rescue ArgumentError
+          @#{name}
+        end
+      EOF
     end
 
-    # 获取副标题
-    def header_subtitle
-      @subtitle = @contents
-    end
+    # def header_scoreinit
+    #   @scoreinit = Integer(@contents)
+    # rescue ArgumentError
+    #   @scoreinit
+    # end
+    define_header :scoreinit, 'Integer'
+    define_header :scorediff, 'Integer'
+    define_header :songvol,   'Integer'
+    define_header :sevol,     'Integer'
+    define_header :level,     'Integer'
+
+    define_header :title
+    define_header :subtitle
+    define_header :course
 
     # 获取 bpm
     def header_bpm
       invalid_in_a_bar('BPMCHANGE')
-      @bpm = @contents.to_f
-      update_speed
+      begin
+        @bpm = Float(@contents)
+      rescue ArgumentError
+        @bpm
+      else
+        update_speed
+      end
     end
 
     # 获取音乐文件名
@@ -203,38 +228,18 @@ module Taiko
 
     # 获取延迟
     def header_offset
-      @time = -1000.0 * @contents.to_f
-    end
-
-    # 获取初项
-    def header_scoreinit
-      @score_init = @contents.to_i
-    end
-
-    # 获取公差
-    def header_scorediff
-      @score_diff = @contents.to_i
-    end
-
-    # 获取歌曲音量
-    def header_songvol
-      @song_vol = @contents.to_i
-    end
-
-    # 获取音效音量
-    def header_sevol
-      @se_vol = @contents.to_i
+      @time = -1000.0 * Float(@contents)
+    rescue ArgumentError
+      @time
     end
 
     # 获取谱面滚动速度
     def header_scroll
-      @scroll = @contents.to_f
+      @scroll = Float(@contents)
+    rescue ArgumentError
+      @scroll
+    else
       update_speed
-    end
-
-    # 获取星级
-    def header_level
-      @level = @contents.to_i
     end
 
     # 获取气球数量
@@ -243,15 +248,10 @@ module Taiko
       @balloons = @contents.split(sep).map(&:to_i)
     end
 
-    # 获取难度
-    def header_course
-      @course = @contents.to_i
-    end
-
     # 跳过双人谱面
     def header_style
       if @contents.downcase.include?('double')
-        2.times { read_until('#END') }
+        2.times { read_until("\n#END") }
         read_header
       end
     end
@@ -284,7 +284,9 @@ module Taiko
 
     # 延迟
     def directive_delay
-      @time += @contents.to_f * 1000.0
+      @time += Float(@contents) * 1000.0
+    rescue ArgumentError
+      @time
     end
 
     # 确认当前并没有在读取音符
@@ -359,14 +361,14 @@ module Taiko
       raise TJAError, message
     end
 
-    # 读取文件。到文件尾时抛出 EOFError。
+    # 读取文件并清除注释。到文件尾时抛出 EOFError。
     def read_until(sep)
       ret = @file.readline(sep)
-      if @file.eof?
+      unless ret.end_with?(ret)
         @file.close
         raise EOFError
       end
-      ret
+      ret.gsub(COMMENT_RE, '')
     end
   end
 end

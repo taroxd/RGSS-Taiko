@@ -83,7 +83,7 @@ module Scene
     # 播放预览
     def play_demo
       Audio.bgm_stop
-      Audio.bgm_play songdata.wave, songdata.song_vol, 100
+      Audio.bgm_play songdata.wave, songdata.songvol, 100
     end
 
     def update_scene

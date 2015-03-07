@@ -30,7 +30,7 @@ module Taiko
       # 分数
       def score
         return 0 if !@performance || @performance == :miss
-        score = score_init + [combo / 10, 10].min * score_diff
+        score = scoreinit + [combo / 10, 10].min * scorediff
         score *= 2 if big? && @double
         score /= 2 if performance == :great
         score = score * 6 / 5 if gogotime?

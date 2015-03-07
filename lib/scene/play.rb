@@ -110,8 +110,8 @@ module Scene
 
     # 更新音效
     def update_sound_effect
-      Audio.se_play 'Audio/SE/dong', se_vol if Keyboard.inner?
-      Audio.se_play 'Audio/SE/ka',   se_vol if Keyboard.outer?
+      Audio.se_play 'Audio/SE/dong', sevol if Keyboard.inner?
+      Audio.se_play 'Audio/SE/ka',   sevol if Keyboard.outer?
     end
 
     # 切换场景
