@@ -7,8 +7,8 @@ Download available at <https://github.com/taroxd/RGSS-Taiko/releases>.
 
 ## How To Play ##
 Put your tja and ogg file in the "Song" Folder.  
-About tja file, see [taikojiro](http://www.nicovideo.jp/watch/sm5463901).  
-Only a small part of the tja function is supported.
+About tja file, see [taikojiro](http://www.nicovideo.jp/watch/sm5463901) for details.  
+All the tja function is not supported currently.
 
 Press UP and DOWN arrow keys to select a song. Press LEFT and RIGHT arrow keys to select a course.
 
