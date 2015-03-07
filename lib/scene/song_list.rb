@@ -53,8 +53,9 @@ module Scene
         @index = 0
         @courses = Hash.new(0)
       end
-      @courses.each do |song_index, course|
-        select_course(song_index, course)
+
+      @songlist.each_with_index do |songdata, index|
+        select_course(index, @courses[songdata.name])
       end
     end
 
@@ -97,7 +98,7 @@ module Scene
     # 更新难度
     def update_course(course_diff)
       if select_course(@index, course_diff)
-        @courses[@index] += course_diff
+        @courses[songdata.name] += course_diff
         save_index
         Audio.se_play 'Audio/SE/dong'
       end
