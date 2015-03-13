@@ -113,6 +113,13 @@ module Taiko
       GLOBAL[:last_hit] = note
       note.hit
       on_hit
+      @hit_callbacks.each { |c| c.call(note) }
+    end
+
+    # 在每次击打时，以击打的 note 为参数调用 callback 或 block。
+    def hit_callback(callback = nil, &block)
+      @hit_callbacks.push(callback) if callback
+      @hit_callbacks.push(block) if block
     end
 
     # 更新时间
@@ -152,6 +159,7 @@ module Taiko
 
     # 初始化游戏对象
     def init_game_objects
+      @hit_callbacks = []
       GLOBAL[:fumen] = Fumen.new
       GLOBAL[:gauge] = Gauge.new
     end
