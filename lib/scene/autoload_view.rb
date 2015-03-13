@@ -22,8 +22,8 @@ module Scene
       @view = view_class.new
     end
 
-    def update
-      super
+    # 这个方法需要主动调用
+    def update_view
       @view.update
     end
 

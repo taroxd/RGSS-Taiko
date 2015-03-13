@@ -5,7 +5,6 @@ require 'scene/song_list'
 module Scene
 
   @scene = nil                            # 当前场景实例
-  @stack = []                             # 场景切换的记录
 
   # 运行
   def self.run
@@ -31,22 +30,6 @@ module Scene
   # 直接切换某个场景（无过渡）
   def self.goto(scene_class)
     @scene = scene_class.new
-  end
-
-  # 切换
-  def self.call(scene_class)
-    @stack.push(@scene)
-    @scene = scene_class.new
-  end
-
-  # 返回到上一个场景
-  def self.return
-    @scene = @stack.pop
-  end
-
-  # 清空场景切换的记录
-  def self.clear
-    @stack.clear
   end
 
   # 退出游戏

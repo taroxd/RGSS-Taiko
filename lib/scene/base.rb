@@ -10,9 +10,11 @@ module Scene
       start
       post_start
       update until scene_changing?
-      pre_terminate
+      # pre_terminate
       terminate
     end
+
+    private
 
     # 开始处理
     def start
@@ -41,8 +43,8 @@ module Scene
     end
 
     # 结束前处理
-    def pre_terminate
-    end
+    # def pre_terminate
+    # end
 
     # 结束处理
     def terminate
@@ -57,11 +59,6 @@ module Scene
     # 获取渐变速度
     def transition_speed
       10
-    end
-
-    # 返回前一个场景
-    def return_scene
-      Scene.return
     end
 
     # 淡出各种音效以及图像

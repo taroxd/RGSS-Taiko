@@ -1,4 +1,4 @@
-#encoding:utf-8
+# encoding: utf-8
 
 require 'scene/base'
 require 'scene/autoload_view'
@@ -23,11 +23,16 @@ module Scene
 
     private
 
-    # 更新
+    def start
+      super
+      GC.start # 释放文件句柄，并清理内存
+    end
+
     def update
       super
       started? ? update_after_started : update_before_started
       update_sound_effect
+      update_view
       update_scene unless scene_changing?
     end
 
@@ -119,7 +124,7 @@ module Scene
       if Input.trigger?(:B)
         Taiko.stop
         fadeout_all(120)
-        return_scene
+        Scene.goto(SongList)
       end
     end
   end

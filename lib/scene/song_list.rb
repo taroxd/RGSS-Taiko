@@ -42,6 +42,7 @@ module Scene
       update_index
       update_course(1)  if Input.trigger?(:RIGHT)
       update_course(-1) if Input.trigger?(:LEFT)
+      update_view
       update_scene unless scene_changing?
     end
 
@@ -127,7 +128,7 @@ module Scene
         Audio.se_play 'Audio/SE/dong'
         Taiko.setup songdata
         fadeout_all(120)
-        Scene.call(Play)
+        Scene.goto(Play)
       end
     end
   end
