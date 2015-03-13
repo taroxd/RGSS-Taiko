@@ -18,6 +18,7 @@ module View
         @flower = Flower.new(viewport,
           {x: pos_x, y: pos_y, z: pos_z},{duration: duration_time})
         @combo_number = 0
+        Taiko.hit_callback { update_combo }
         hide
       end
       #--------------------------------------------------------------------------
@@ -41,15 +42,19 @@ module View
       #--------------------------------------------------------------------------
       def update
         @flower.update
-        return if @combo_number == Taiko.combo
-        @combo_number = Taiko.combo
-        if @combo_number < 10 then hide
+      end
+
+      def update_combo
+        combo = Taiko.combo
+        if combo < 10
+          hide
         else
-          @flower.show if @combo_number % 50 == 0
-          if @combo_number < 50 then @combo1.show(@combo_number)
+          @flower.show if combo % 50 == 0
+          if combo < 50
+            @combo1.show(combo)
           else
             @combo1.clear
-            @combo2.show(@combo_number)
+            @combo2.show(combo)
           end
         end
       end

@@ -16,15 +16,10 @@ module View
           },
           {duration: 30}
         )
+        Taiko.hit_callback(method(:reset_and_show))
       end
 
       def update
-        return unless Taiko.last_hit
-        if @last_hit != Taiko.last_hit
-          @last_hit = Taiko.last_hit
-          reset_and_show if @last_hit.normal?
-        end
-
         super
         return unless self.visible
         return unless self.bitmap
@@ -57,8 +52,9 @@ module View
       end
 
       # 重置并显示
-      def reset_and_show
-        type = case @last_hit.performance
+      def reset_and_show(note)
+        return unless note.normal?
+        type = case note.performance
         when :miss  then 2
         when :great then 1
         else             0

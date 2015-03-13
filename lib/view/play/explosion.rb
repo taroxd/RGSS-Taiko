@@ -16,6 +16,7 @@ module View
         @sprite_lower = Lower.new(viewport_lower,
           {x: lower_pos_x, y: lower_pos_y, z: lower_pos_z},
           {frame: lower_frame_max, duration: lower_duration_time})
+        Taiko.hit_callback(method(:explode))
       end
       #--------------------------------------------------------------------------
       # ● 上层特效X坐标
@@ -63,15 +64,6 @@ module View
       def update
         @sprite_upper.update
         @sprite_lower.update
-        return unless Taiko.last_hit
-        return if @finish == Taiko.last_hit.time
-        return if Taiko.last_hit.performance == :miss
-        return unless Taiko.last_hit.normal?
-        type = Taiko.last_hit.performance == :perfect ? 0 : 1
-        type += Taiko.last_hit.double ? 2 : 0
-        @finish = Taiko.last_hit.time
-        @sprite_upper.reset_and_show(type)
-        @sprite_lower.reset_and_show(type)
       end
       #--------------------------------------------------------------------------
       # ● 释放
@@ -79,6 +71,17 @@ module View
       def dispose
         @sprite_upper.dispose
         @sprite_lower.dispose
+      end
+
+      private
+
+      def explode(note)
+        return if note.performance == :miss
+        return unless note.normal?
+        type = note.performance == :perfect ? 0 : 1
+        type += note.double ? 2 : 0
+        @sprite_upper.reset_and_show(type)
+        @sprite_lower.reset_and_show(type)
       end
     end
   end
