@@ -1,76 +1,72 @@
 # encoding: utf-8
 
 require 'view/view_container'
-require 'view/animation'
 
 module View
   class Play
     class NoteFly < ViewContainer
+
+      d = NOTE_FLY_DURATION
+
+      # 起始点
+      x0 = FUMEN_X - NOTE_X
+      y0 = FUMEN_Y + NOTE_SIZE / 2
+
+      # 终点
+      x1 = GAUGE_X + 311
+      y1 = GAUGE_Y
+
+      # 开口程度
+      a = NOTE_FLY_ACC_Y
+
+      # 计算加权平均
+      weighted_average = lambda do |x, y, wx, wy|
+        (x * wx + y * wy).fdiv(wx + wy)
+      end
+
+      # x 方向匀速运动
+      GET_X = Hash.new do |h, t|
+        h[t] = weighted_average[x0, x1, d - t, t]
+      end
+
+      # y 方向匀加速运动
+      GET_Y = Hash.new do |h, t|
+        h[t] = weighted_average[y0, y1, d - t, t] - t * (d - t) * a
+      end
+
       def initialize(viewport)
         super(Note, viewport)
-      end
 
-      def update
-        yield_view(&:reset_and_show) if to_show?
-        super
-      end
-
-      private
-
-      def to_show?
-        return false unless Taiko.last_hit
-        unless @last_hit.equal? Taiko.last_hit
-          @last_hit = Taiko.last_hit
-          @last_status = nil
-        end
-        return false if @last_hit.performance == :miss
-        return false if @last_hit.balloon?
-        return false if @last_status == @last_hit.status
-        @last_status = @last_hit.status
-        true
-      end
-
-      class Note < Animation
-        def initialize(viewport)
-          super(viewport,
-            {
-              x: SkinSettings.fetch(:NoteEffectX),
-              y: SkinSettings.fetch(:NoteEffectY),
-              z: 0,
-            },
-            {duration: 10}
-          )
-        end
-
-        # 重置并显示
-        def reset_and_show
-          self.bitmap = Cache.note_head(Taiko.last_hit.type)
-          @frame = 0
-          set_frame
-          show
-          set_change_effect
-        end
-
-        # 设置图像变更时的特效
-        def set_change_effect
-          self.y = @change_effect[1] if @change_effect
-          self.x = @change_effect[2] if @change_effect
-          @change_effect = [20, self.y, self.x]
-        end
-
-        # 更新图像变更时的特效
-        def update_change_effect
-          if @change_effect[0] > 0
-            self.y -= 5
-            @change_effect[0] -= 2
+        Taiko.hit_callback do |note|
+          yield_view do |v|
+            v.show(note) if note.performance != :miss && !note.balloon?
           end
+        end
+      end
+
+      class Note < Sprite
+
+        def initialize(_)
+          super
+          self.ox = self.oy = NOTE_SIZE / 2
+          @t = 0
+          self.visible = false
+        end
+
+        def show(note)
+          @t = 0
+          self.bitmap = Cache.note_head(note.type)
+          self.visible = true
         end
 
         def update
-          super
-          return unless self.visible
-          return unless self.bitmap
-          update_change_effect
+          if @t <= NOTE_FLY_DURATION
+            self.x = GET_X[@t]
+            self.y = GET_Y[@t]
+            @t += 1
+          else
+            self.visible = false
+          end
         end
       end
     end

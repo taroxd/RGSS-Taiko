@@ -8,6 +8,8 @@ require 'view/play/combo'
 require 'view/play/explosion'
 require 'view/play/judgement'
 require 'view/play/note_fly'
+require 'view/play/gauge'
+require 'view/play/roll_balloon'
 require 'view/score'
 
 
@@ -49,9 +51,11 @@ module View
         Background.new(@viewport1),
         Gogosplash.new(@viewport1),
         MTaiko.new(@viewport1),
+        RollBalloon.new(@viewport1),
         Fumen.new(@viewport2),
         Score.new(@viewport3),
         Combo.new(@viewport3),
+        Gauge.new(@viewport1),
         Explosion.new(@viewport3, @viewport1),
         Judgement.new(@viewport3),
         NoteFly.new(@viewport3)
