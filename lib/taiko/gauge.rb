@@ -4,6 +4,8 @@
 module Taiko
   class Gauge
 
+    NORMAL_RATE = 0.8  # 及格线
+
     def initialize
       @value = 0
       @max = (Taiko.fumen.dons.size + Taiko.fumen.kas.size) * 5
@@ -23,7 +25,7 @@ module Taiko
 
     # 是否及格
     def normal?
-      @value * 5 >= @max * 4
+      @max * NORMAL_RATE >= @value
     end
 
     # 是否满魂
