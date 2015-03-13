@@ -10,7 +10,6 @@ module View
       def initialize(viewport)
         @notes = Taiko.fumen.notes_for_display
         super(Note, viewport)
-        push_notes
       end
 
       def update
@@ -57,7 +56,6 @@ module View
           if note
             update_bitmap
             self.ox = note.ox
-            update
             self.visible = true
           else
             self.visible = false
