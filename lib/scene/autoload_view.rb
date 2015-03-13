@@ -20,6 +20,7 @@ module Scene
     def start
       super
       @view = view_class.new
+      update_view
     end
 
     # 这个方法需要主动调用
