@@ -13,6 +13,7 @@ module View
 
       FONT = Font.new('simhei', 14)
       LINE_HEIGHT = 30
+      SCORE_HEIGHT = 15
 
       def initialize(_)
         super
@@ -62,16 +63,20 @@ module View
       # 绘制选中的歌曲信息
       def draw_current
         draw_simple_info(@songdata, 120, 110, 340)
-        #TODO: 绘制全连的皇冠，当前分数等信息
-        # playdata = Taiko.load(@songdata.name)
-        # if playdata  # 有记录成绩
-        #   if playdata[:miss] == 0
-        #     画金冠
-        #   elsif playdata[:normal_clear]
-        #     画银冠
-        #   end
-        #   绘制 playdata[:score]
-        # end
+        draw_playdata Taiko.load(@songdata.name)
+
+      end
+
+      def draw_playdata(playdata)
+        return unless playdata
+        crown_type = case
+        when playdata[:miss].zero? then 3
+        when playdata[:normal_clear] then 2
+        else 1
+        end
+        bitmap.blt(65, 115, Cache.skin('clearmark'), Rect.new(28 * crown_type, 0, 28, 28))
+
+        bitmap.draw_text(0, Graphics.height - 14, Graphics.width, 14, playdata[:score], 2)
       end
     end
   end
