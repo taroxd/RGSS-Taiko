@@ -68,14 +68,15 @@ module View
       end
 
       def draw_playdata(playdata)
-        return unless playdata
         crown_type = case
+        when !playdata then 0
         when playdata[:miss].zero? then 3
         when playdata[:normal_clear] then 2
         else 1
         end
         bitmap.blt(65, 115, Cache.skin('clearmark'), Rect.new(28 * crown_type, 0, 28, 28))
 
+        return unless playdata
         bitmap.draw_text(0, Graphics.height - 14, Graphics.width, 14, playdata[:score], 2)
       end
     end
