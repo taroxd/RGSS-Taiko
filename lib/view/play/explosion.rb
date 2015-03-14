@@ -1,87 +1,53 @@
 # encoding: utf-8
 
-require 'view/play/explosion/upper'
-require 'view/play/explosion/lower'
-
 module View
   class Play
     class Explosion
-      #--------------------------------------------------------------------------
-      # ● 初始化
-      #--------------------------------------------------------------------------
-      def initialize(viewport_upper = nil,viewport_lower = nil)
-        @sprite_upper = Upper.new(viewport_upper,
-          {x: upper_pos_x, y: upper_pos_y, z: upper_pos_z},
-          {frame: upper_frame_max, duration: upper_duration_time})
-        @sprite_lower = Lower.new(viewport_lower,
-          {x: lower_pos_x, y: lower_pos_y, z: lower_pos_z},
-          {frame: lower_frame_max, duration: lower_duration_time})
-        Taiko.hit_callback(method(:explode))
+      class Base < Animation
+
+        def frame_height
+          self.bitmap.height / 4
+        end
+
+        def frame_y
+          @frame_y || 0
+        end
+
+        def reset_and_show(type)
+          @duration = 0
+          @frame = 0
+          @frame_y = self.bitmap.height / 4 * type
+          set_frame
+          show
+        end
       end
-      #--------------------------------------------------------------------------
-      # ● 上层特效X坐标
-      #--------------------------------------------------------------------------
-      def upper_pos_x; SkinSettings.fetch(:ExplosionUpperX); end
-      #--------------------------------------------------------------------------
-      # ● 上层特效Y坐标
-      #--------------------------------------------------------------------------
-      def upper_pos_y; SkinSettings.fetch(:ExplosionUpperY); end
-      #--------------------------------------------------------------------------
-      # ● 上层特效帧数
-      #--------------------------------------------------------------------------
-      def upper_frame_max; SkinSettings.fetch(:ExplosionUpperFrame); end
-      #--------------------------------------------------------------------------
-      # ● 上层特效持续时间
-      #--------------------------------------------------------------------------
-      def upper_duration_time; 1; end
-      #--------------------------------------------------------------------------
-      # ● 上层特效Z坐标
-      #--------------------------------------------------------------------------
-      def upper_pos_z; 0; end
-      #--------------------------------------------------------------------------
-      # ● 下层特效X坐标
-      #--------------------------------------------------------------------------
-      def lower_pos_x; SkinSettings.fetch(:ExplosionLowerX); end
-      #--------------------------------------------------------------------------
-      # ● 下层特效Y坐标
-      #--------------------------------------------------------------------------
-      def lower_pos_y; SkinSettings.fetch(:ExplosionLowerY); end
-      #--------------------------------------------------------------------------
-      # ● 下层特效帧数
-      #--------------------------------------------------------------------------
-      def lower_frame_max; SkinSettings.fetch(:ExplosionLowerFrame); end
-      #--------------------------------------------------------------------------
-      # ● 下层特效持续时间
-      #--------------------------------------------------------------------------
-      def lower_duration_time; 1; end
-      #--------------------------------------------------------------------------
-      # ● 下层特效Z坐标
-      #--------------------------------------------------------------------------
-      def lower_pos_z; 100; end
-      #--------------------------------------------------------------------------
-      # ● 更新
-      #--------------------------------------------------------------------------
+
+      def initialize(viewport_upper, viewport_lower)
+        @upper = Base.new(viewport_upper,
+          {x: EXPLOSION_UPPER_X, y: EXPLOSION_UPPER_Y, z: 0},
+          {frame: EXPLOSION_UPPER_FRAME, duration: 1, filename: 'explosion_upper'})
+
+        @lower = Base.new(viewport_lower,
+          {x: EXPLOSION_LOWER_X, y: EXPLOSION_LOWER_Y, z: 100},
+          {frame: EXPLOSION_LOWER_FRAME, duration: 1, filename: 'explosion_lower'})
+
+        Taiko.hit_callback do |note|
+          next if note.performance == :miss || !note.normal?
+          type = note.performance == :perfect ? 0 : 1
+          type += note.double ? 2 : 0
+          @upper.reset_and_show(type)
+          @lower.reset_and_show(type)
+        end
+      end
+
       def update
-        @sprite_upper.update
-        @sprite_lower.update
+        @upper.update
+        @lower.update
       end
-      #--------------------------------------------------------------------------
-      # ● 释放
-      #--------------------------------------------------------------------------
+
       def dispose
-        @sprite_upper.dispose
-        @sprite_lower.dispose
-      end
-
-      private
-
-      def explode(note)
-        return if note.performance == :miss
-        return unless note.normal?
-        type = note.performance == :perfect ? 0 : 1
-        type += note.double ? 2 : 0
-        @sprite_upper.reset_and_show(type)
-        @sprite_lower.reset_and_show(type)
+        @upper.dispose
+        @lower.dispose
       end
     end
   end
