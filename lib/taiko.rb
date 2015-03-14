@@ -146,7 +146,8 @@ module Taiko
       else
         new_data = old_data
       end
-      new_data[:normal_clear] = gauge.normal? || old_data[:normal_clear]
+
+      new_data[:normal_clear] = gauge.normal? || (old_data && old_data[:normal_clear])
       save_data(new_data, make_filename(name))
     end
 
