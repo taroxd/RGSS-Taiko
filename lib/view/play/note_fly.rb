@@ -13,7 +13,7 @@ module View
       y0 = FUMEN_Y + NOTE_SIZE / 2
 
       # 终点
-      x1 = GAUGE_X + 311
+      x1 = GAUGE_X + 309
       y1 = GAUGE_Y
 
       # 开口程度
