@@ -25,7 +25,7 @@ module Taiko
 
     # 是否及格
     def normal?
-      @max * NORMAL_RATE >= @value
+      @value >= @max * NORMAL_RATE
     end
 
     # 是否满魂
