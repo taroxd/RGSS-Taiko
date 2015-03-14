@@ -1,110 +1,87 @@
-#encoding:utf-8
-#==============================================================================
-# ■ Spriteset_Number
-#------------------------------------------------------------------------------
-#  显示数字的精灵组
-#==============================================================================
+# encoding: utf-8
 
 require 'view/digit'
 
 module View
-  class Number
-    #--------------------------------------------------------------------------
-    # ● 初始化
-    #--------------------------------------------------------------------------
-    def initialize(viewport = nil)
-      @number_list = []
+  Number = Struct.new(:x, :y, :z, :interval, :alignment) do
+
+    # interval
+    #   数字间的间距
+    #
+    # alignment
+    #   0: 居左 1: 居中 2: 居右
+
+    # Number.new(viewport, x: 233, bitmap: 'combonumber')
+    def initialize(viewport, options = {})
+      parse_options(options)
+      @digits = []
       @viewport = viewport
-      @bitmap = get_bitmap
-      show(0)
+      # show(0)
     end
-    #--------------------------------------------------------------------------
-    # ● 获取位图
-    #--------------------------------------------------------------------------
-    def get_bitmap
-      raise NotImplementedError
-    end
-    #--------------------------------------------------------------------------
-    # ● 清除数字
-    #--------------------------------------------------------------------------
+
     def clear
       @num_now = nil
-      @number_list.compact!
-      @number_list.each(&:clear)
+      @digits.each(&:clear)
     end
-    #--------------------------------------------------------------------------
-    # ● 更新
-    #--------------------------------------------------------------------------
+
+    # virtual
     def update
-      update_change_effect
     end
-    #--------------------------------------------------------------------------
-    # ● 释放精灵
-    #--------------------------------------------------------------------------
+
     def dispose
-      @number_list.compact!
-      @number_list.each(&:dispose)
+      @digits.each(&:dispose)
     end
-    #--------------------------------------------------------------------------
-    # ● 显示数字
-    #--------------------------------------------------------------------------
+
     def show(num)
       return if num == @num_now
       @num_now = num
-      digits = num.to_s.chars.map(&:to_i)
       clear
-      digits.each_with_index do |digit, index|
-        @number_list[index] ||= Digit.new(@viewport, @bitmap)
-        @number_list[index].x = pos_x
-        @number_list[index].y = pos_y
-        @number_list[index].z = pos_z
-        @number_list[index].x += (@bitmap.width / 10 + pos_width) * index
-        @number_list[index].show(digit)
+      digit_width = bitmap.width / 10 + interval
+      num_s = num.to_s
+      num_s.each_char.with_index do |char, index|
+        digit = @digits[index] ||= Digit.new(@viewport, bitmap)
+        digit.x = x + digit_width * index
+        digit.y = y
+        digit.z = z
+        digit.show(char.to_i)
       end
-      update_placements((@bitmap.width/10+pos_width)*digits.size-pos_width)
-      set_change_effect
+      update_placements(digit_width * num_s.length - interval)
+      on_change
     end
-    #--------------------------------------------------------------------------
-    # ● 设置数字变更时的特效
-    #--------------------------------------------------------------------------
-    def set_change_effect
-    end
-    #--------------------------------------------------------------------------
-    # ● 更新数字变更时的特效
-    #--------------------------------------------------------------------------
-    def update_change_effect
-    end
-    #--------------------------------------------------------------------------
-    # ● 计算显示位置
-    #--------------------------------------------------------------------------
+
+    # 计算显示位置
     def update_placements(total_width)
-      return unless pos_type == 1 || pos_type == 2
-      @number_list.each do |num|
-        num.x -= case pos_type
-                 when 1 then total_width/2
-                 when 2 then total_width
-                 end
+      return if alignment.zero?
+      @digits.each do |digit|
+        digit.x -= case alignment
+        when 1 then total_width / 2
+        when 2 then total_width
+        end
       end
     end
-    #--------------------------------------------------------------------------
-    # ● 数字 X 坐标
-    #--------------------------------------------------------------------------
-    def pos_x; 0; end
-    #--------------------------------------------------------------------------
-    # ● 数字 Y 坐标
-    #--------------------------------------------------------------------------
-    def pos_y; 0; end
-    #--------------------------------------------------------------------------
-    # ● 数字 Z 高度
-    #--------------------------------------------------------------------------
-    def pos_z; 0; end
-    #--------------------------------------------------------------------------
-    # ● 数字间距的调整
-    #--------------------------------------------------------------------------
-    def pos_width; 0; end
-    #--------------------------------------------------------------------------
-    # ● 数字描绘的方式（0：居左对齐，1：居中对齐，2：居右对齐）
-    #--------------------------------------------------------------------------
-    def pos_type; 0; end
+
+    # virtual
+    # 容纳十个数字的位图
+    def bitmap
+      @bitmap || raise(TypeError, 'bitmap not given')
+    end
+
+    private
+
+    # 返回 Digit 的数组
+    attr_reader :digits
+
+    def parse_options(options)
+      members.each do |sym|
+        self[sym] = options.fetch(sym, 0)
+      end
+
+      @bitmap = Cache.try_convert(options[:bitmap])
+    end
+
+    # virtual
+    # 重设数字时的处理
+    def on_change
+    end
   end
 end

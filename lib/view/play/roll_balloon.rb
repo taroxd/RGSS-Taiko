@@ -5,15 +5,6 @@ module View
   class Play
     class RollBalloon
 
-      class RollNumber < Number
-        def pos_x; ROLL_BALLOON_X + 64; end
-        def pos_y; ROLL_BALLOON_Y + 20; end
-        def pos_width; ROLL_BALLOON_WIDTH; end
-        def get_bitmap; Cache.skin('combonumber'); end
-        def pos_z; 0; end
-        def pos_type; 2; end
-      end
-
       def initialize(viewport)
         @back = Sprite.new(viewport)
         @back.bitmap = Cache.skin('rollballoon')
@@ -21,7 +12,8 @@ module View
         @back.x = ROLL_BALLOON_X
         @back.y = ROLL_BALLOON_Y
 
-        @number = RollNumber.new(viewport)
+        @number = Number.new(viewport, x: ROLL_BALLOON_X + 64, y: ROLL_BALLOON_Y + 20,
+          interval: ROLL_BALLOON_INTERVAL, bitmap: 'combonumber', alignment: 2)
 
         Taiko.hit_callback(method(:set_note))
 

@@ -16,16 +16,17 @@ module View
   # 连击数
   COMBO_NUMBER_X = 47
   COMBO_NUMBER_Y = 150
-  COMBO_NUMBER_WIDTH = 0  # 间距
+  COMBO_NUMBER_INTERVAL = 0
 
   # 连击数（50连）
   COMBO_NUMBER_X2 = 47
   COMBO_NUMBER_Y2 = 146
-  COMBO_NUMBER_WIDTH2 = -10
+  COMBO_NUMBER_INTERVAL2 = -10
 
   # 连击数特效（50连）
   MTAIKOFLOWER_X = 3
   MTAIKOFLOWER_Y = 124
+  MTAIKOFLOWER_DURATION = 30
 
   # 太鼓左侧中心
   MTAIKO_LIX = 2
@@ -56,7 +57,7 @@ module View
   FUMEN_Y = 149
 
   # 判定点的 X 偏移
-  NOTE_X = -35
+  NOTE_X = 35
 
   # GOGO_TIME
   GOGOSPLASH = 5     # 数目
@@ -93,5 +94,5 @@ module View
   # 连打气泡
   ROLL_BALLOON_X = 50
   ROLL_BALLOON_Y = 0
-  ROLL_BALLOON_WIDTH = 0
+  ROLL_BALLOON_INTERVAL = 0
 end

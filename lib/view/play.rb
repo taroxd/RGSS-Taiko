@@ -39,11 +39,11 @@ module View
     # 生成显示端口
     def create_viewports
       @viewport1 = Viewport.new
-      @viewport2 = Viewport.new(fumen_x,fumen_y,Graphics.width,Graphics.height)
+      @viewport2 = Viewport.new(FUMEN_X, FUMEN_Y, Graphics.width, Graphics.height)
       @viewport3 = Viewport.new
       @viewport2.z = 50
       @viewport3.z = 100
-      @viewport2.ox = note_x
+      @viewport2.ox = -NOTE_X
     end
 
     def create_all_views
@@ -61,15 +61,6 @@ module View
         NoteFly.new(@viewport3)
       ]
     end
-
-    # 获取谱面X坐标
-    def fumen_x; SkinSettings.fetch(:FumenX); end
-
-    # 获取谱面Y坐标
-    def fumen_y; SkinSettings.fetch(:FumenY); end
-
-    # 获取音符判定点X坐标
-    def note_x; SkinSettings.fetch(:NoteX); end
 
     def update_all_views
       @views.each(&:update)

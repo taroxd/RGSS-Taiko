@@ -9,7 +9,7 @@ module View
       d = NOTE_FLY_DURATION
 
       # 起始点
-      x0 = FUMEN_X - NOTE_X
+      x0 = FUMEN_X + NOTE_X
       y0 = FUMEN_Y + NOTE_SIZE / 2
 
       # 终点

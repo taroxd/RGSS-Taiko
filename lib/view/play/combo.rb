@@ -2,46 +2,45 @@
 
 # 显示当前连击数
 
-require 'view/play/combo/combo_number'
-require 'view/play/combo/combo_number_l'
-require 'view/play/combo/flower'
-
 module View
   class Play
     class Combo
-      #--------------------------------------------------------------------------
-      # ● 初始化
-      #--------------------------------------------------------------------------
-      def initialize(viewport = nil)
-        @combo1 = ComboNumber.new(viewport)
-        @combo2 = ComboNumberL.new(viewport)
-        @flower = Flower.new(viewport,
-          {x: pos_x, y: pos_y, z: pos_z},{duration: duration_time})
+
+      class Flower < Animation
+
+        def get_bitmap(_)
+          Cache.skin("mtaikoflower")
+        end
+
+        def show
+          @frame = 0
+          set_frame
+          super
+        end
+      end
+
+      def initialize(viewport)
         @combo_number = 0
+
+        @combo1 = Number.new(viewport,
+          x: COMBO_NUMBER_X, y: COMBO_NUMBER_Y, interval: COMBO_NUMBER_INTERVAL,
+          alignment: 1, bitmap: 'combonumber')
+
+        @combo2 = Number.new(viewport,
+          x: COMBO_NUMBER_X2, y: COMBO_NUMBER_Y2, interval: COMBO_NUMBER_INTERVAL2,
+          alignment: 1, bitmap: 'combonumber_l')
+
+        @flower = Flower.new(viewport,
+          {x: MTAIKOFLOWER_X, y: MTAIKOFLOWER_Y, z: -1},
+          {duration: MTAIKOFLOWER_DURATION}
+        )
+
         Taiko.hit_callback { update_combo }
         hide
       end
-      #--------------------------------------------------------------------------
-      # ● 花朵X坐标
-      #--------------------------------------------------------------------------
-      def pos_x; SkinSettings.fetch(:MtaikoflowerX); end
-      #--------------------------------------------------------------------------
-      # ● 花朵Y坐标
-      #--------------------------------------------------------------------------
-      def pos_y; SkinSettings.fetch(:MtaikoflowerY); end
-      #--------------------------------------------------------------------------
-      # ● 花朵Z坐标
-      #--------------------------------------------------------------------------
-      def pos_z; -1; end
-      #--------------------------------------------------------------------------
-      # ● 花朵显示时间
-      #--------------------------------------------------------------------------
-      def duration_time; 60; end
-      #--------------------------------------------------------------------------
-      # ● 更新
-      #--------------------------------------------------------------------------
+
       def update
-        @flower.update
+        @flower.update if @flower.visible
       end
 
       def update_combo
@@ -58,17 +57,13 @@ module View
           end
         end
       end
-      #--------------------------------------------------------------------------
-      # ● 隐藏
-      #--------------------------------------------------------------------------
+
       def hide
         @combo1.clear
         @combo2.clear
         @flower.hide
       end
-      #--------------------------------------------------------------------------
-      # ● 释放
-      #--------------------------------------------------------------------------
+
       def dispose
         @combo1.dispose
         @combo2.dispose

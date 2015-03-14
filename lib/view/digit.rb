@@ -1,9 +1,9 @@
-# encoding:utf-8
-#  显示数字的精灵类，在 Spriteset_Number 内部使用
+# encoding: utf-8
+#  显示一位数字的精灵类，在 Number 内部使用
 
 module View
   class Digit < Sprite
-    def initialize(viewport = nil, bitmap)
+    def initialize(viewport, bitmap)
       super(viewport)
       self.bitmap = bitmap
       @width = self.bitmap.width / 10

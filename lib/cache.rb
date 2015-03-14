@@ -87,24 +87,18 @@ module Cache
 
     # 皮肤的位图
     def skin(filename)
-      load_bitmap("Skin/", filename)
+      load_bitmap('Skin/', filename)
     end
 
-    # 跳舞者的位图
-    def dancer(filename)
-      load_bitmap("Skin/dancer/", filename)
-    end
-
-    # 裁剪之后的皮肤位图
-    def score_numbers(filename)
-      load("score-#{filename}") do
-        temp_bitmap = Bitmap.new("Skin/#{filename}")
-        target_bitmap = Bitmap.new(temp_bitmap.width*10/12,temp_bitmap.height/7)
-        src_rect = Rect.new(temp_bitmap.width/12*2, temp_bitmap.height/7*2,
-          target_bitmap.width, target_bitmap.height)
-        target_bitmap.blt(0, 0, temp_bitmap, src_rect)
-        temp_bitmap.dispose
-        target_bitmap
+    # 当 param 为字符串时，返回 Skin 的位图
+    # 当 param 为位图时，返回 param
+    # 其他情况下返回 nil。
+    def try_convert(param)
+      case param
+      when String
+        skin(param)
+      when Bitmap
+        param
       end
     end
   end
