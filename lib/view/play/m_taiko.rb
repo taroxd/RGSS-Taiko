@@ -8,10 +8,6 @@ module View
     class MTaiko
       class MTaikoh < Animation
         include DisposeBitmap
-        # 精灵的位图由调用者提供
-        def get_bitmap(bitmap)
-          bitmap
-        end
 
         def show
           @frame = 0
@@ -22,31 +18,31 @@ module View
 
       # 初始化
       def initialize(viewport = nil)
-        temp_bitmap = Cache.skin("mtaikoflash_red")
+        temp_bitmap = Cache.skin('mtaikoflash_red')
         @li = MTaikoh.new(viewport,
-          {x: li_pos_x, y: li_pos_y, z: pos_z},
+          {x: MTAIKO_LIX, y: MTAIKO_LIY, z: pos_z},
           {filename: get_bitmap(temp_bitmap, 0), duration: duration_time})
         @ri = MTaikoh.new(viewport,
-          {x: ri_pos_x, y: ri_pos_y, z: pos_z},
+          {x: MTAIKO_RIX, y: MTAIKO_RIY, z: pos_z},
           {filename: get_bitmap(temp_bitmap, 1), duration: duration_time})
-        temp_bitmap.dispose
-        temp_bitmap = Cache.skin("mtaikoflash_blue")
+
+        temp_bitmap = Cache.skin('mtaikoflash_blue')
         @lo = MTaikoh.new(viewport,
-          {x: lo_pos_x, y: lo_pos_y, z: pos_z},
+          {x: MTAIKO_LOX, y: MTAIKO_LOY, z: pos_z},
           {filename: get_bitmap(temp_bitmap, 0), duration: duration_time})
         @ro = MTaikoh.new(viewport,
-          {x: ro_pos_x, y: ro_pos_y, z: pos_z},
+          {x: MTAIKO_ROX, y: MTAIKO_ROY, z: pos_z},
           {filename: get_bitmap(temp_bitmap, 1), duration: duration_time})
-        temp_bitmap.dispose
+
         @sfr = MTaikoh.new(viewport,
-          {x: sf_pos_x, y: sf_pos_y, z: pos_z},
-          {filename: Cache.skin("sfieldflash_red"), duration: duration_time})
+          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
+          {filename: Cache.skin('sfieldflash_red'), duration: duration_time})
         @sfb = MTaikoh.new(viewport,
-          {x: sf_pos_x, y: sf_pos_y, z: pos_z},
-          {filename: Cache.skin("sfieldflash_blue"), duration: duration_time})
+          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
+          {filename: Cache.skin('sfieldflash_blue'), duration: duration_time})
         @sfg = MTaikoh.new(viewport,
-          {x: sf_pos_x, y: sf_pos_y, z: pos_z},
-          {filename: Cache.skin("sfieldflash_gogotime"), duration: duration_time})
+          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
+          {filename: Cache.skin('sfieldflash_gogotime'), duration: duration_time})
       end
 
       # 释放
@@ -82,7 +78,8 @@ module View
 
       # 更新谱面打击特效
       def update_fumen
-        if Taiko.gogotime? then @sfg.show
+        if Taiko.gogotime?
+          @sfg.show
         else
           @sfg.hide
           if Keyboard.outer?
@@ -97,39 +94,23 @@ module View
       end
 
       # 切割图片
-      def get_bitmap(temp_bitmap,type = 0)
+      def get_bitmap(temp_bitmap, type = 0)
         target_bitmap = Bitmap.new(temp_bitmap.width/2,temp_bitmap.height)
         src_rect = Rect.new(temp_bitmap.width/2 * type, 0,
           target_bitmap.width, target_bitmap.height)
         target_bitmap.blt(0, 0, temp_bitmap, src_rect)
-        return target_bitmap
+        target_bitmap
       end
 
       # Z 坐标
-      def pos_z; 0; end
+      def pos_z
+        0
+      end
 
       # 显示时间
-      def duration_time; 5; end
-
-      # 太鼓左侧中心位置
-      def li_pos_x; SkinSettings.fetch(:MtaikoLIX); end
-      def li_pos_y; SkinSettings.fetch(:MtaikoLIY); end
-
-      # 太鼓左侧外部位置
-      def lo_pos_x; SkinSettings.fetch(:MtaikoLOX); end
-      def lo_pos_y; SkinSettings.fetch(:MtaikoLOY); end
-
-      # 太鼓右侧中心位置
-      def ri_pos_x; SkinSettings.fetch(:MtaikoRIX); end
-      def ri_pos_y; SkinSettings.fetch(:MtaikoRIY); end
-
-      # 太鼓右侧外部位置
-      def ro_pos_x; SkinSettings.fetch(:MtaikoROX); end
-      def ro_pos_y; SkinSettings.fetch(:MtaikoROY); end
-
-      # 谱面闪烁位置
-      def sf_pos_x; SkinSettings.fetch(:MtaikoSFX); end
-      def sf_pos_y; SkinSettings.fetch(:MtaikoSFY); end
+      def duration_time
+        5
+      end
     end
   end
 end

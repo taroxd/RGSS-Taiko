@@ -10,11 +10,11 @@ module View
       def initialize(viewport)
         super(viewport,
           {
-            x: SkinSettings.fetch(:JudgementX),
-            y: SkinSettings.fetch(:JudgementY),
+            x: JUDGEMENT_X,
+            y: JUDGEMENT_Y,
             z: 100,
           },
-          {duration: 30}
+          {duration: 30, filename: 'judgement'}
         )
         Taiko.hit_callback(method(:reset_and_show))
       end
@@ -35,10 +35,6 @@ module View
         else             0
         end
         reset_and_show(type)
-      end
-
-      def get_bitmap(_)
-        Cache.skin('judgement')
       end
 
       # 设置帧的高度

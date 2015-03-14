@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require 'cache'
-require 'view/skin_settings'
 
 module View
 
