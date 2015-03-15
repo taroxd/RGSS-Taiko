@@ -74,7 +74,7 @@ module View
         else 1
         end
         bitmap.blt(65, 115, Cache.skin('clearmark'), Rect.new(28 * crown_type, 0, 28, 28))
-        bitmap.draw_text(0, Graphics.height - 14, Graphics.width, 14, playdata[:score], 2)
+        bitmap.draw_text(0, Graphics.height - 14, Graphics.width, 14, " #{playdata.score}", 2)
       end
     end
   end
