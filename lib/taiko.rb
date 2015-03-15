@@ -38,8 +38,6 @@ module Taiko
   NOTE_SIZE_SMALL = 34               # 小音符的大小
   NOTE_SIZE_BIG = 52                 # 大音符的大小
 
-  @combo = 0
-
   class << self
     # 获取全局数据
     attr_reader :playdata
@@ -50,8 +48,8 @@ module Taiko
     attr_reader :fumen                  # 谱面（Fumen）
     attr_reader :gauge                  # 魂槽（Gauge）
     attr_reader :songdata               # 歌曲信息（Songdata）
+    attr_reader :play_time              # 游戏时间（毫秒数）
 
-    def play_time;  @play_time || 0;         end    # 游戏时间（毫秒）
     def score;      playdata.score;          end    # 当前分数
     def accuracy;   playdata.accuracy;       end    # 准确率
     def songvol;    songdata.songvol;        end    # 歌曲音量
@@ -90,7 +88,7 @@ module Taiko
       @combo = 0
       @hit_callbacks = []
       @start_time = nil
-      @play_time = nil
+      @play_time = 0
       @last_hit = nil
     end
 
