@@ -17,7 +17,7 @@ module Taiko
       # X 坐标
       def x
         return 0 if hitting?
-        return (end_time - play_time) * @speed if over?
+        return (end_time - Taiko.play_time) * @speed if over?
         super
       end
 
@@ -36,14 +36,14 @@ module Taiko
         @status -= 1
         if @status <= 0
           @status = false
-          Audio.se_play 'Audio/SE/balloon', sevol
+          Audio.se_play 'Audio/SE/balloon', Taiko.sevol
         end
       end
 
       # 分数
       def score
         score = @status ? 300 : 5000
-        score = score * 6 / 5 if gogotime?
+        score = score * 6 / 5 if Taiko.gogotime?
         score
       end
 

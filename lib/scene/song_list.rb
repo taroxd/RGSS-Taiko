@@ -72,7 +72,7 @@ module Scene
 
     def make_song_list
       @songlist = Dir.glob("#{DIRECTORY}/**/*#{EXTNAME}").map do |name|
-        SongData.new name.chomp(EXTNAME)
+        Songdata.new name.chomp(EXTNAME)
       end
       if @songlist.empty?
         raise "There is no tja file in the folder `#{DIRECTORY}'!"

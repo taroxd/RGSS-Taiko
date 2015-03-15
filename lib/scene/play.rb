@@ -30,7 +30,7 @@ module Scene
 
     def update
       super
-      started? ? update_after_started : update_before_started
+      Taiko.started? ? update_after_started : update_before_started
       update_sound_effect
       update_view
       update_scene unless scene_changing?
@@ -63,15 +63,15 @@ module Scene
 
     # 更新鼓面的击打
     def update_inner
-      find_rolls_and_hit(fumen.rolls)    ||
-      find_rolls_and_hit(fumen.balloons) ||
-      find_note_and_hit(fumen.dons, Keyboard.both_inner?)
+      find_rolls_and_hit(Taiko.fumen.rolls)    ||
+      find_rolls_and_hit(Taiko.fumen.balloons) ||
+      find_note_and_hit(Taiko.fumen.dons, Keyboard.both_inner?)
     end
 
     # 更新鼓边的击打
     def update_outer
-      find_rolls_and_hit(fumen.rolls) ||
-      find_note_and_hit(fumen.kas, Keyboard.both_outer?)
+      find_rolls_and_hit(Taiko.fumen.rolls) ||
+      find_note_and_hit(Taiko.fumen.kas, Keyboard.both_outer?)
     end
 
     # 搜索音符并击打
@@ -99,10 +99,10 @@ module Scene
 
     # 检查丢失
     def check_miss
-      shift_missed_notes(fumen.dons,     true)
-      shift_missed_notes(fumen.kas,      true)
-      shift_missed_notes(fumen.rolls,    false)
-      shift_missed_notes(fumen.balloons, false)
+      shift_missed_notes(Taiko.fumen.dons,     true)
+      shift_missed_notes(Taiko.fumen.kas,      true)
+      shift_missed_notes(Taiko.fumen.rolls,    false)
+      shift_missed_notes(Taiko.fumen.balloons, false)
     end
 
     # 移除丢失的音符
@@ -115,8 +115,8 @@ module Scene
 
     # 更新音效
     def update_sound_effect
-      Audio.se_play 'Audio/SE/dong', sevol if Keyboard.inner?
-      Audio.se_play 'Audio/SE/ka',   sevol if Keyboard.outer?
+      Audio.se_play 'Audio/SE/dong', Taiko.sevol if Keyboard.inner?
+      Audio.se_play 'Audio/SE/ka',   Taiko.sevol if Keyboard.outer?
     end
 
     # 切换场景

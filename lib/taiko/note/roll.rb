@@ -17,7 +17,7 @@ module Taiko
       # 分数
       def score
         score = big? ? 360 : 300
-        score = score * 6 / 5 if gogotime?
+        score = score * 6 / 5 if Taiko.gogotime?
         score
       end
 

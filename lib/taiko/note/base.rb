@@ -5,8 +5,6 @@ module Taiko
   module Note
     class Base
 
-      include Taiko
-
       # type -> Fixnum 范围为 0..9
       # time -> Fixnum or Range
       # speed -> Fixnum
@@ -42,7 +40,7 @@ module Taiko
 
       # x 坐标
       def x
-        (start_time - play_time) * @speed
+        (start_time - Taiko.play_time) * @speed
       end
 
       # 原点 x 坐标
@@ -67,7 +65,7 @@ module Taiko
 
       # 是否已经过了准确击打的时间
       def over?
-        play_time > end_time
+        Taiko.play_time > end_time
       end
 
       # 绘制位图

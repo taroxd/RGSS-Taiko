@@ -63,20 +63,17 @@ module View
       # 绘制选中的歌曲信息
       def draw_current
         draw_simple_info(@songdata, 120, 110, 340)
-        draw_playdata Taiko.load(@songdata.name)
-
+        draw_playdata Taiko::Playdata.load(@songdata.name)
       end
 
       def draw_playdata(playdata)
         crown_type = case
-        when !playdata then 0
-        when playdata[:miss].zero? then 3
-        when playdata[:normal_clear] then 2
+        when playdata.empty? then 0
+        when playdata.miss.zero? then 3
+        when playdata.normal_clear? then 2
         else 1
         end
         bitmap.blt(65, 115, Cache.skin('clearmark'), Rect.new(28 * crown_type, 0, 28, 28))
-
-        return unless playdata
         bitmap.draw_text(0, Graphics.height - 14, Graphics.width, 14, playdata[:score], 2)
       end
     end

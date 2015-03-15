@@ -6,9 +6,9 @@ module Taiko
 
     NORMAL_RATE = 0.8  # 及格线
 
-    def initialize
+    def initialize(fumen)
       @value = 0
-      @max = (Taiko.fumen.dons.size + Taiko.fumen.kas.size) * 5
+      @max = (fumen.dons.size + fumen.kas.size) * 5
     end
 
     # 添加音符 -> self

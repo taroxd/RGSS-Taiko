@@ -24,13 +24,13 @@ module Taiko
 
       # 是否在 gogotime 中
       def gogotime?
-        songdata.gogotimes.any? { |range| range.include?(@time) }
+        Taiko.songdata.gogotimes.any? { |range| range.include?(@time) }
       end
 
       # 分数
       def score
         return 0 if !@performance || @performance == :miss
-        score = scoreinit + [combo / 10, 10].min * scorediff
+        score = Taiko.scoreinit + [Taiko.combo / 10, 10].min * Taiko.scorediff
         score *= 2 if big? && @double
         score /= 2 if performance == :great
         score = score * 6 / 5 if gogotime?
@@ -44,7 +44,7 @@ module Taiko
 
       # 判定
       def judge
-        offset = (play_time - @time).abs
+        offset = (Taiko.play_time - @time).abs
         return :perfect if offset < PERFECT_JUDGE
         return :great   if offset < GREAT_JUDGE
         return :miss    if offset < MISS_JUDGE || over?
@@ -53,7 +53,7 @@ module Taiko
 
       # 是否已经过了击打时间
       def over?
-        play_time - @time > MISS_JUDGE
+        Taiko.play_time - @time > MISS_JUDGE
       end
 
       # 绘制位图

@@ -3,7 +3,7 @@
 # 管理谱面文件的读取以及谱面信息的类。
 
 module Taiko
-  class SongData
+  class Songdata
 
     HEADER_RE = /#?(\w+) *:?(.*)/      # 头部设定
     DIRECTIVE_RE = /^# *(\w+) *:?(.*)/ # 谱面中指令

@@ -11,8 +11,9 @@ module Taiko
     attr_reader :dons, :kas, :rolls, :balloons
     attr_reader :end_time
 
-    def initialize
-      @fumen = Taiko.songdata.fumen
+    def initialize(songdata)
+      @songdata = songdata
+      @fumen = songdata.fumen
       init_notes
       init_notes_for_display
       init_note_types
@@ -61,7 +62,7 @@ module Taiko
     # 初始化气球
     def init_balloons
       @balloons = @notes[BALLOON].sort_by(&:start_time)
-      @balloons.zip(Taiko.songdata.balloons).each do |note, number|
+      @balloons.zip(@songdata.balloons).each do |note, number|
         note.number = number
       end
     end

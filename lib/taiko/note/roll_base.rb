@@ -18,7 +18,7 @@ module Taiko
 
       # 是否可以击打
       def hitting?
-        @time.include?(play_time)
+        @time.include?(Taiko.play_time)
       end
 
       # 显示的数字（X 连打 / 剩余 X 次）
