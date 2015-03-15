@@ -1,93 +1,79 @@
 # encoding: utf-8
 
 require 'view/animation'
-require 'view/dispose_bitmap'
 
 module View
   class Play
     class MTaiko
-      class MTaikoh < Animation
-        include DisposeBitmap
-
-        def show
-          @frame = 0
-          set_frame
-          super
-        end
-      end
 
       # 初始化
       def initialize(viewport = nil)
         temp_bitmap = Cache.skin('mtaikoflash_red')
-        @li = MTaikoh.new(viewport,
-          {x: MTAIKO_LIX, y: MTAIKO_LIY, z: pos_z},
-          {filename: get_bitmap(temp_bitmap, 0), duration: duration_time})
-        @ri = MTaikoh.new(viewport,
-          {x: MTAIKO_RIX, y: MTAIKO_RIY, z: pos_z},
-          {filename: get_bitmap(temp_bitmap, 1), duration: duration_time})
+        @li = Animation.new(viewport,
+          x: MTAIKO_LIX, y: MTAIKO_LIY, z: pos_z,
+            bitmap: get_bitmap(temp_bitmap, 0), duration: duration_time)
+        @ri = Animation.new(viewport,
+          x: MTAIKO_RIX, y: MTAIKO_RIY, z: pos_z,
+            bitmap: get_bitmap(temp_bitmap, 1), duration: duration_time)
 
         temp_bitmap = Cache.skin('mtaikoflash_blue')
-        @lo = MTaikoh.new(viewport,
-          {x: MTAIKO_LOX, y: MTAIKO_LOY, z: pos_z},
-          {filename: get_bitmap(temp_bitmap, 0), duration: duration_time})
-        @ro = MTaikoh.new(viewport,
-          {x: MTAIKO_ROX, y: MTAIKO_ROY, z: pos_z},
-          {filename: get_bitmap(temp_bitmap, 1), duration: duration_time})
+        @lo = Animation.new(viewport,
+          x: MTAIKO_LOX, y: MTAIKO_LOY, z: pos_z,
+            bitmap: get_bitmap(temp_bitmap, 0), duration: duration_time)
+        @ro = Animation.new(viewport,
+          x: MTAIKO_ROX, y: MTAIKO_ROY, z: pos_z,
+            bitmap: get_bitmap(temp_bitmap, 1), duration: duration_time)
 
-        @sfr = MTaikoh.new(viewport,
-          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
-          {filename: Cache.skin('sfieldflash_red'), duration: duration_time})
-        @sfb = MTaikoh.new(viewport,
-          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
-          {filename: Cache.skin('sfieldflash_blue'), duration: duration_time})
-        @sfg = MTaikoh.new(viewport,
-          {x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z},
-          {filename: Cache.skin('sfieldflash_gogotime'), duration: duration_time})
+        @sfr = Animation.new(viewport,
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
+            bitmap: Cache.skin('sfieldflash_red'), duration: duration_time)
+        @sfb = Animation.new(viewport,
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
+            bitmap: Cache.skin('sfieldflash_blue'), duration: duration_time)
+        @sfg = Animation.new(viewport,
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
+            bitmap: Cache.skin('sfieldflash_gogotime'), duration: duration_time)
+
+        @views = [@li, @ri, @lo, @ro, @sfr, @sfb, @sfg]
       end
 
       # 释放
       def dispose
-        @li.dispose
-        @ri.dispose
-        @lo.dispose
-        @ro.dispose
-        @sfr.dispose
-        @sfb.dispose
-        @sfg.dispose
+        @views.each do |v|
+          v.bitmap.dispose
+          v.dispose
+        end
       end
 
       # 更新
       def update
         update_taiko
         update_fumen
-        @li.update
-        @lo.update
-        @ri.update
-        @ro.update
-        @sfr.update
-        @sfb.update
+        @views.each(&:update)
       end
+
+      private
 
       # 更新太鼓打击特效
       def update_taiko
-        @lo.show if Keyboard.left_outer?
-        @ro.show if Keyboard.right_outer?
-        @li.show if Keyboard.left_inner?
-        @ri.show if Keyboard.right_inner?
+        @lo.reset if Keyboard.left_outer?
+        @ro.reset if Keyboard.right_outer?
+        @li.reset if Keyboard.left_inner?
+        @ri.reset if Keyboard.right_inner?
       end
 
       # 更新谱面打击特效
       def update_fumen
         if Taiko.gogotime?
-          @sfg.show
+          @sfg.reset
         else
           @sfg.hide
           if Keyboard.outer?
             @sfr.hide
-            @sfb.show
+            @sfb.reset
           end
           if Keyboard.inner?
-            @sfr.show
+            @sfr.reset
             @sfb.hide
           end
         end

@@ -12,8 +12,8 @@ module View
       def initialize(viewport1 = nil, viewport2 = nil)
         @viewport = viewport1
         @fire = Animation.new(viewport1,
-          {x: FIRE_X, y: FIRE_Y, z: 100, loop: true},
-          {frame: FIRE_FRAME, duration: 3, filename: 'Fire'})
+          x: FIRE_X, y: FIRE_Y, z: 100, loop: true,
+          frame: FIRE_FRAME, duration: 3, bitmap: 'Fire')
         @bitmap = Cache.skin('gogosplash')
         set_spriteset
       end
@@ -43,8 +43,7 @@ module View
         @sprite_list.each(&:dispose) if @sprite_list
         @sprite_list = Array.new(GOGOSPLASH) do |i|
           Animation.new(@viewport,
-            {x: pos_x(i), y: pos_y, z: pos_z},
-            {filename: @bitmap, frame: GOGO_FRAME, duration: 1})
+            x: pos_x(i), y: pos_y, z: pos_z, bitmap: @bitmap, frame: GOGO_FRAME)
         end
       end
 

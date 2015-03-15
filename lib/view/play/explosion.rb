@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'view/animation'
+
 module View
   class Play
     class Explosion
@@ -9,27 +11,21 @@ module View
           self.bitmap.height / 4
         end
 
-        def frame_y
-          @frame_y || 0
-        end
-
         def reset_and_show(type)
           @duration = 0
-          @frame = 0
           @frame_y = self.bitmap.height / 4 * type
-          set_frame
-          show
+          reset(true)
         end
       end
 
       def initialize(viewport_upper, viewport_lower)
         @upper = Base.new(viewport_upper,
-          {x: EXPLOSION_UPPER_X, y: EXPLOSION_UPPER_Y, z: 0},
-          {frame: EXPLOSION_UPPER_FRAME, duration: 1, filename: 'explosion_upper'})
+          x: EXPLOSION_UPPER_X, y: EXPLOSION_UPPER_Y, z: 0,
+          frame: EXPLOSION_UPPER_FRAME, duration: 1, bitmap: 'explosion_upper')
 
         @lower = Base.new(viewport_lower,
-          {x: EXPLOSION_LOWER_X, y: EXPLOSION_LOWER_Y, z: 100},
-          {frame: EXPLOSION_LOWER_FRAME, duration: 1, filename: 'explosion_lower'})
+          x: EXPLOSION_LOWER_X, y: EXPLOSION_LOWER_Y, z: 100,
+          frame: EXPLOSION_LOWER_FRAME, duration: 1, bitmap: 'explosion_lower')
 
         Taiko.hit_callback do |note|
           next if note.performance == :miss || !note.normal?

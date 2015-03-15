@@ -8,14 +8,8 @@ module View
     class Judgement < Animation
 
       def initialize(viewport)
-        super(viewport,
-          {
-            x: JUDGEMENT_X,
-            y: JUDGEMENT_Y,
-            z: 100,
-          },
-          {duration: 30, filename: 'judgement'}
-        )
+        super(viewport, x: JUDGEMENT_X, y: JUDGEMENT_Y, z: 100,
+          duration: 30, bitmap: 'judgement')
         Taiko.hit_callback(method(:reset_and_show))
       end
 
@@ -28,23 +22,9 @@ module View
 
       private
 
-      def reset_judge
-        type = case @last_hit.performance
-        when :miss  then 2
-        when :great then 1
-        else             0
-        end
-        reset_and_show(type)
-      end
-
       # 设置帧的高度
       def frame_height
         self.bitmap.height / 3
-      end
-
-      # 设置当前帧Y坐标
-      def frame_y
-        @frame_y || 0
       end
 
       # 重置并显示
@@ -55,10 +35,8 @@ module View
         when :great then 1
         else             0
         end
-        @frame = 0
-        @frame_y = self.bitmap.height / 3 * type
-        set_frame
-        show
+        self.frame_y = self.bitmap.height / 3 * type
+        reset(true)
         set_change_effect
       end
 

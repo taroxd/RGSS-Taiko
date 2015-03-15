@@ -2,25 +2,28 @@
 
 # 依序修改图像实现动画效果的精灵（只播放一次）
 
-require 'view/dispose_bitmap'
-
 module View
   class Animation < Sprite
 
-    def initialize(viewport = nil, pos = {}, bitmap = {})
+    # Animation.new(viewport, x: 233, bitmap: 'something')
+    def initialize(viewport, options = {})
       super(viewport)
-      set_pos(pos[:x], pos[:y], pos[:z])
-      set_bitmap(bitmap[:filename], bitmap[:frame], bitmap[:duration])
-      @loop = pos[:loop]
-      hide
+
+      self.x = options[:x] || x
+      self.y = options[:y] || y
+      self.z = options[:z] || z
+
+      self.bitmap = get_bitmap(options[:bitmap]) || raise(TypeError, 'bitmap not given')
+      @max_frame = options.fetch(:frame, 1)
+      @frame_duration = @duration = options.fetch(:duration, 1)
+      @loop = options[:loop]
+      self.frame_y = options.fetch(:frame_y, 0)
+
+      reset(false)
     end
 
-    # 当前帧Y坐标
-    def frame_y
-      0
-    end
-
-    # 设置当前帧高度
+    # virtual
+    # 当前帧高度
     def frame_height
       self.bitmap.height
     end
@@ -55,34 +58,30 @@ module View
       @loop
     end
 
+    def reset(show = true)
+      @frame = 0
+      set_frame
+      self.visible = show
+    end
+
+    protected
+
+    # virtual
+    # 当前帧的 y 坐标
+    attr_accessor :frame_y
+
     private
 
     # virtual
     # 获取使用的位图
-    def get_bitmap(filename)
-      Cache.try_convert(filename)
-    end
-
-    # 设置位置
-    def set_pos(x, y, z)
-      self.x, self.y, self.z = x || 0, y || 0, z || 0
-    end
-
-    # 设置位图
-    def set_bitmap(filename, frame, duration)
-      self.bitmap.dispose if self.bitmap
-      self.bitmap = get_bitmap(filename || "")
-      @max_frame = [frame || 1,1].max.to_i
-      @frame_duration = @duration = duration || 1
-      @frame = 0
-      set_frame
+    def get_bitmap(bitmap)
+      Cache.try_convert(bitmap)
     end
 
     # 设置当前帧图像
     def set_frame
       width = self.bitmap.width / @max_frame
-      rect_new = Rect.new(@frame * width, frame_y, width, frame_height)
-      self.src_rect.set(rect_new)
+      self.src_rect = Rect.new(@frame * width, frame_y, width, frame_height)
       @duration = @frame_duration
       update_frame
     end

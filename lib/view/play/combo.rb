@@ -2,22 +2,11 @@
 
 # 显示当前连击数
 
+require 'view/animation'
+
 module View
   class Play
     class Combo
-
-      class Flower < Animation
-
-        def get_bitmap(_)
-          Cache.skin("mtaikoflower")
-        end
-
-        def show
-          @frame = 0
-          set_frame
-          super
-        end
-      end
 
       def initialize(viewport)
         @combo_number = 0
@@ -30,9 +19,9 @@ module View
           x: COMBO_NUMBER_X2, y: COMBO_NUMBER_Y2, interval: COMBO_NUMBER_INTERVAL2,
           alignment: 1, bitmap: 'combonumber_l')
 
-        @flower = Flower.new(viewport,
-          {x: MTAIKOFLOWER_X, y: MTAIKOFLOWER_Y, z: -1},
-          {duration: MTAIKOFLOWER_DURATION}
+        @flower = Animation.new(viewport,
+          x: MTAIKOFLOWER_X, y: MTAIKOFLOWER_Y, z: -1,
+          duration: MTAIKOFLOWER_DURATION, bitmap: 'mtaikoflower'
         )
 
         Taiko.hit_callback { update_combo }
@@ -48,7 +37,7 @@ module View
         if combo < 10
           hide
         else
-          @flower.show if combo % 50 == 0
+          @flower.reset if combo % 50 == 0
           if combo < 50
             @combo1.show(combo)
           else
