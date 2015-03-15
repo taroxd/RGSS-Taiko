@@ -7,7 +7,7 @@ module View
       # 素材规格的常量
       WIDTH = 300
       HEIGHT = 22
-      NORMAL_X = 233
+      NORMAL_X = 233  # 及格线位置
 
       def initialize(viewport)
         @empty = Sprite.new(viewport)
