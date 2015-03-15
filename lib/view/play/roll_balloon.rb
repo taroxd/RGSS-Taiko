@@ -12,7 +12,9 @@ module View
         @back.x = ROLL_BALLOON_X
         @back.y = ROLL_BALLOON_Y
 
-        @number = Number.new(viewport, x: ROLL_BALLOON_X + 64, y: ROLL_BALLOON_Y + 20,
+        @number = Number.new(viewport,
+          x: ROLL_BALLOON_X + ROLL_BALLOON_NUMBER_DX,
+          y: ROLL_BALLOON_Y + ROLL_BALLOON_NUMBER_DY,
           interval: ROLL_BALLOON_INTERVAL, bitmap: 'combonumber', alignment: 2)
 
         Taiko.hit_callback(method(:set_note))

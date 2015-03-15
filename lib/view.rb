@@ -87,11 +87,14 @@ module View
   GAUGE_Y = 27
 
   # 音符弹起效果
-  NOTE_FLY_ACC_Y = 0.5    # Y 方向的加速度（相对值）
-  NOTE_FLY_DURATION = 20
+  NOTE_FLY_DURATION = 20  # 影响持续时间和 Y 方向的加速度
+  NOTE_FLY_ACC_Y = 0.5    # Y 方向的加速度补正
 
   # 连打气泡
   ROLL_BALLOON_X = 50
   ROLL_BALLOON_Y = 0
-  ROLL_BALLOON_INTERVAL = 0
+  # 连打气泡中的数字
+  ROLL_BALLOON_NUMBER_DX = 66
+  ROLL_BALLOON_NUMBER_DY = 22
+  ROLL_BALLOON_INTERVAL = -5
 end
