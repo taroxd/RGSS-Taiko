@@ -75,7 +75,7 @@ module Scene
         Songdata.new name.chomp(EXTNAME)
       end
       if @songlist.empty?
-        raise "There is no tja file in the folder `#{DIRECTORY}'!"
+        raise "no tja file in the folder `#{DIRECTORY}'"
       end
     end
 
@@ -90,7 +90,7 @@ module Scene
         @index %= @songlist.size
       end
       if last_index != @index
-        Audio.se_play 'Audio/SE/dong'
+        Audio.se_play DONG_SE
         play_demo
         save_index
       end
@@ -101,7 +101,7 @@ module Scene
       if select_course(@index, course_diff)
         @courses[songdata.name] += course_diff
         save_index
-        Audio.se_play 'Audio/SE/dong'
+        Audio.se_play DONG_SE
       end
     end
 
@@ -125,7 +125,7 @@ module Scene
 
     def update_scene
       if Input.trigger?(:C)
-        Audio.se_play 'Audio/SE/dong'
+        Audio.se_play DONG_SE
         Taiko.setup songdata
         fadeout_all(120)
         Scene.goto(Play)

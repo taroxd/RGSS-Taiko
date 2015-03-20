@@ -36,7 +36,7 @@ module Taiko
         @status -= 1
         if @status <= 0
           @status = false
-          Audio.se_play 'Audio/SE/balloon', Taiko.sevol
+          Audio.se_play BALLOON_SE, Taiko.sevol
         end
       end
 

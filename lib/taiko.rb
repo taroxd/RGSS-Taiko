@@ -22,6 +22,9 @@ module Taiko
   # 文件设置
   DIRECTORY = 'Songs'                # 谱面文件的位置
   EXTNAME = '.tja'                   # 谱面文件的扩展名
+  DONG_SE = 'Audio/SE/dong'
+  KA_SE = 'Audio/SE/ka'
+  BALLOON_SE = 'Audio/SE/balloon'
 
   # 音符种类，请勿修改！
   BARLINE    = 0
@@ -39,6 +42,7 @@ module Taiko
   NOTE_SIZE_BIG = 52                 # 大音符的大小
 
   class << self
+
     # 获取全局数据
     attr_reader :playdata
     attr_reader :last_hit               # 最后一次击打的音符（Note）
@@ -50,12 +54,12 @@ module Taiko
     attr_reader :songdata               # 歌曲信息（Songdata）
     attr_reader :play_time              # 游戏时间（毫秒数）
 
-    def score;      playdata.score;          end    # 当前分数
-    def accuracy;   playdata.accuracy;       end    # 准确率
-    def songvol;    songdata.songvol;        end    # 歌曲音量
-    def sevol;      songdata.sevol;          end    # 音效音量
-    def scoreinit;  songdata.scoreinit;      end    # 初项
-    def scorediff;  songdata.scorediff;      end    # 公差
+    def score;     playdata.score;     end    # 当前分数
+    def accuracy;  playdata.accuracy;  end    # 准确率
+    def songvol;   songdata.songvol;   end    # 歌曲音量
+    def sevol;     songdata.sevol;     end    # 音效音量
+    def scoreinit; songdata.scoreinit; end    # 初项
+    def scorediff; songdata.scorediff; end    # 公差
 
     # 游戏是否结束
     def gameover?
