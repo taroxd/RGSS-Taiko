@@ -8,7 +8,7 @@ Download available at <https://github.com/taroxd/RGSS-Taiko/releases>.
 ## How To Play ##
 Put your tja and ogg files in the "Song" Folder.  
 About tja files, see [taikojiro](http://www.nicovideo.jp/watch/sm5463901) for more details.  
-All the tja function is not supported currently.
+All the tja functions are not supported currently.
 
 Note that:
 * Tja files must be UTF-8 encoded.
@@ -36,8 +36,8 @@ require 'main'
 ```
 
 For debugging, uncomment the line `require 'debug'` in `main.rb`.
-This will set $TEST to true and allocate a console for input and output, just as the RPG Maker VX Ace does.
+This will set `$TEST` to true and allocate a console for input and output, just as the RPG Maker VX Ace does.
 
 ## Contribute ##
 
-Just send a pull request.
+Just send me a pull request.
