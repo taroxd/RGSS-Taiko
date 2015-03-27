@@ -10,6 +10,7 @@ module Taiko
     COMMENT_RE = /\/\/.+/              # 注释
 
     TJAError = Class.new(StandardError)
+    ReadNextHeader = Class.new(TJAError)
 
     attr_reader(
       # 不包含扩展名的文件路径
@@ -92,6 +93,8 @@ module Taiko
           end
         end
       end
+    rescue ReadNextHeader
+      retry
     end
 
     # 读取谱面的内容
@@ -252,7 +255,7 @@ module Taiko
     def header_style
       if @contents.downcase.include?('double')
         2.times { read_until("\n#END") }
-        read_header
+        raise ReadNextHeader
       end
     end
 
