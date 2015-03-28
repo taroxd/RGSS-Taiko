@@ -65,13 +65,14 @@ module Cache
     # 单个音符的位图
     def note(note)
       load("note-#{note.type}-#{note.width}") do
-        Bitmap.new(note.width, Taiko::NOTE_SIZE).tap { |b| note.draw(b) }
+        note.bitmap
       end
     end
 
+    # 音符的头部位图
     def note_head(type)
       load("note-#{type}-#{Taiko::NOTE_SIZE}") do
-        note Taiko::Note[type, 0..0, 0]
+        Taiko::Note[type, 0..0, 0].bitmap
       end
     end
 

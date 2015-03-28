@@ -72,6 +72,11 @@ module Taiko
       def draw(bitmap)
       end
 
+      # 获取不被缓存的音符位图
+      def bitmap
+        Bitmap.new(width, NOTE_SIZE).tap { |b| draw(b) }
+      end
+
       # 音符种类的判断方法
       def normal?; false; end
       alias_method :roll?, :normal?
