@@ -12,7 +12,7 @@ All the tja functions are not supported currently.
 
 Note that:
 * Tja files must be UTF-8 encoded.
-* The project must be placed in a path that contains no Non-ASCII character.
+* The project must be placed in a path that contains no non-ASCII character.
 
 Press UP and DOWN arrow keys to select a song. Press LEFT and RIGHT arrow keys to select a course.
 
