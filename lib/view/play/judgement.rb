@@ -42,16 +42,15 @@ module View
 
       # 设置图像变更时的特效
       def set_change_effect
-        self.y = @change_effect[1] if @change_effect
-        @change_effect = [8, self.y]
-        self.y += @change_effect[0]
+        self.y = JUDGEMENT_Y + 8
+        @change_effect = 8
       end
 
       # 更新图像变更时的特效
       def update_change_effect
-        if @change_effect[0] > 0
+        if @change_effect > 0
           self.y -= 2
-          @change_effect[0] -= 2
+          @change_effect -= 2
         end
       end
     end
