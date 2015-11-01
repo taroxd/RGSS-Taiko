@@ -14,7 +14,7 @@ module View
         def reset_and_show(type)
           @duration = 0
           @frame_y = self.bitmap.height / 4 * type
-          reset(true)
+          reset
         end
       end
 
