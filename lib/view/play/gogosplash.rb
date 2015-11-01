@@ -9,7 +9,7 @@ module View
     class Gogosplash
 
       # 初始化
-      def initialize(viewport1 = nil, viewport2 = nil)
+      def initialize(viewport1)
         @viewport = viewport1
         @fire = Animation.new(viewport1,
           x: FIRE_X, y: FIRE_Y, z: 100, loop: true,
