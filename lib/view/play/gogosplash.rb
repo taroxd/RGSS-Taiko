@@ -50,7 +50,6 @@ module View
       # 显示特效
       def show
         @gogotime = true
-        set_spriteset
         @sprite_list.each(&:show)
         @fire.show
       end
