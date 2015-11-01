@@ -27,6 +27,9 @@ module View
   MTAIKOFLOWER_Y = 124
   MTAIKOFLOWER_DURATION = 30
 
+  # 太鼓按键效果持续时间
+  MTAIKO_DURATION = 5
+
   # 太鼓左侧中心
   MTAIKO_LIX = 2
   MTAIKO_LIY = 115

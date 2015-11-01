@@ -8,31 +8,33 @@ module View
 
       # 初始化
       def initialize(viewport = nil)
+
+        z = 0
         temp_bitmap = Cache.skin('mtaikoflash_red')
         @li = Animation.new(viewport,
-          x: MTAIKO_LIX, y: MTAIKO_LIY, z: pos_z,
-            bitmap: get_bitmap(temp_bitmap, 0), duration: duration_time)
+          x: MTAIKO_LIX, y: MTAIKO_LIY, z: z,
+            bitmap: get_bitmap(temp_bitmap, 0), duration: MTAIKO_DURATION)
         @ri = Animation.new(viewport,
-          x: MTAIKO_RIX, y: MTAIKO_RIY, z: pos_z,
-            bitmap: get_bitmap(temp_bitmap, 1), duration: duration_time)
+          x: MTAIKO_RIX, y: MTAIKO_RIY, z: z,
+            bitmap: get_bitmap(temp_bitmap, 1), duration: MTAIKO_DURATION)
 
         temp_bitmap = Cache.skin('mtaikoflash_blue')
         @lo = Animation.new(viewport,
-          x: MTAIKO_LOX, y: MTAIKO_LOY, z: pos_z,
-            bitmap: get_bitmap(temp_bitmap, 0), duration: duration_time)
+          x: MTAIKO_LOX, y: MTAIKO_LOY, z: z,
+            bitmap: get_bitmap(temp_bitmap, 0), duration: MTAIKO_DURATION)
         @ro = Animation.new(viewport,
-          x: MTAIKO_ROX, y: MTAIKO_ROY, z: pos_z,
-            bitmap: get_bitmap(temp_bitmap, 1), duration: duration_time)
+          x: MTAIKO_ROX, y: MTAIKO_ROY, z: z,
+            bitmap: get_bitmap(temp_bitmap, 1), duration: MTAIKO_DURATION)
 
         @sfr = Animation.new(viewport,
-          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
-            bitmap: Cache.skin('sfieldflash_red'), duration: duration_time)
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: z,
+            bitmap: Cache.skin('sfieldflash_red'), duration: MTAIKO_DURATION)
         @sfb = Animation.new(viewport,
-          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
-            bitmap: Cache.skin('sfieldflash_blue'), duration: duration_time)
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: z,
+            bitmap: Cache.skin('sfieldflash_blue'), duration: MTAIKO_DURATION)
         @sfg = Animation.new(viewport,
-          x: MTAIKO_SFX, y: MTAIKO_SFY, z: pos_z,
-            bitmap: Cache.skin('sfieldflash_gogotime'), duration: duration_time)
+          x: MTAIKO_SFX, y: MTAIKO_SFY, z: z,
+            bitmap: Cache.skin('sfieldflash_gogotime'), duration: MTAIKO_DURATION)
 
         @views = [@li, @ri, @lo, @ro, @sfr, @sfb, @sfg]
       end
@@ -86,16 +88,6 @@ module View
           target_bitmap.width, target_bitmap.height)
         target_bitmap.blt(0, 0, temp_bitmap, src_rect)
         target_bitmap
-      end
-
-      # Z 坐标
-      def pos_z
-        0
-      end
-
-      # 显示时间
-      def duration_time
-        5
       end
     end
   end
