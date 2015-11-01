@@ -23,7 +23,7 @@ module View
         if @gogotime && !Taiko.gogotime?
           @fire.hide
           @gogotime = false
-        elsif Taiko.gogotime?
+        elsif !@gogotime && Taiko.gogotime?
           show
         end
         @fire.update
@@ -40,7 +40,6 @@ module View
 
       # 设置精灵
       def set_spriteset
-        @sprite_list.each(&:dispose) if @sprite_list
         @sprite_list = Array.new(GOGOSPLASH) do |i|
           Animation.new(@viewport,
             x: pos_x(i), y: pos_y, z: pos_z, bitmap: @bitmap, frame: GOGO_FRAME)
@@ -50,7 +49,7 @@ module View
       # 显示特效
       def show
         @gogotime = true
-        @sprite_list.each(&:show)
+        @sprite_list.each(&:reset)
         @fire.show
       end
 
