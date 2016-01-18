@@ -30,7 +30,7 @@ module View
         Taiko.hit_callback do |note|
           next if note.performance == :miss || !note.normal?
           type = note.performance == :perfect ? 0 : 1
-          type += note.double ? 2 : 0
+          type += note.double && note.big? ? 2 : 0
           @upper.reset_and_show(type)
           @lower.reset_and_show(type)
         end
